@@ -1,34 +1,29 @@
+// Description: Provides the entry point for the firebase functions
+// Developer: Matt Cole
+// Date created: 2022-05-03
+// Change history:
+//  1. 
+
+const { adminEmail } = require('../configuration/config');
+
 const authorise = (req, authenticated, rules, next) => {
 
     const { localid } = req.headers;
     const { role, email, uid } = authenticated.data;
     const { roles, allowSameUser } = rules;
 
-    console.log('allowSameUser', allowSameUser);
-    console.log('localId', localid);
-    console.log('uid', uid);
-
-    if (email === 'mcole.uk@gmail.com') {
-        console.log('mca');
+    if (email === adminEmail)
         return next(null, { status: 200, message: 'OK' });
-    }
     
-    if (allowSameUser && localid && uid === localid) {
-        console.log('mcb');
+    if (allowSameUser && localid && uid === localid)
         return next(null, { status: 200, message: 'OK' });
-    }
          
-    if (!role) {
-        console.log('mcc', authenticated);
+    if (!role)
         return next({ status: 403, message: 'Forbidden' }, null);
-    }
          
-    if (roles.includes(role)) {
-        console.log('mcd')
+    if(role.every(r => roles.includes(r)))
         return next(null, { status: 200, message: 'OK'});
-    }
-    
-    console.log('mce');
+
     return next( { status: 403, message: 'Forbidden' }, null);
 }
 

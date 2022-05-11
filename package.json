@@ -4,7 +4,7 @@
   "description": "firebase api",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "keywords": [
     "firebase",
@@ -14,5 +14,10 @@
     "auth"
   ],
   "author": "Matt Cole",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "convict": "^6.2.3",
+    "jest": "^28.1.0",
+    "supertest": "^6.2.3"
+  }
 }

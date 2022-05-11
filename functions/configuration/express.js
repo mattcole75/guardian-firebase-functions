@@ -19,6 +19,7 @@ module.exports = () => {
     });
 
     require('../routes/auth')(app);
+    require('../routes/record')(app);
 
     return app;
 }

@@ -1,12 +1,24 @@
+// Description: Provides the entry point for the firebase functions
+// Developer: Matt Cole
+// Date created: 2022-05-03
+// Change history:
+//  1. 
+
 const auth = require('../repository/auth');
 const authenticate = require('../auth/authenticated');
 const authorise = require('../auth/authorised');
+const { adminEmail } = require('../configuration/config');
 
-const post = (req, next) => {
+const create = (req, next) => {
+
+    let params;
     
-    const params = {...req.body, disabled: false }; // disabled: true for production
+    if (req.body.email === adminEmail)
+        params = {...req.body, role: ['administrator'], disabled: false };
+    else
+        params = {...req.body, role: ['user'], disabled: false }; // disabled: true for production
 
-    auth.post(params, (err, res) => {
+    auth.create(params, (err, res) => {
         if(err)
             next(err, null);
         else {
@@ -76,8 +88,7 @@ const remove = (req, next) => {
 }
 
 module.exports = {
-    post: post,
-    // create: create,
+    create: create,
     isAuthenticated: isAuthenticated,
     isAuthorised: isAuthorised,
     all: all,

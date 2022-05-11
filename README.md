@@ -14,6 +14,13 @@ npm install
 # Run the functions locally for testing
 You can run the firebase functions locally on your environment. Use the following Firebase documentation as reference [Firebase local-emulator] (https://firebase.google.com/docs/functions/local-emulator)
 
+# config.js
+In the functions/configuration directory create a file: config.js. The content of the file will be as follows:
+
+```
+export const adminEmail = 'your.admin@email.com';
+```
+
 ## Functions
 
 ### POST Create new user:

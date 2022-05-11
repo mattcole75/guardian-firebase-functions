@@ -1,15 +1,19 @@
+// Description: Provides the entry point for the firebase functions
+// Developer: Matt Cole
+// Date created: 2022-05-03
+// Change history:
+//  1. 
+
 const admin = require('firebase-admin');
 
-const post = async (req, next) => {
-
-    const role = 'user';
+const create = async (req, next) => {
 
     try {
 
-        const { displayName, email, password, disabled } = req;
+        const { displayName, email, password, disabled, role } = req;
 
-        if (!displayName || !email || !password) {
-            return next({ status:400, message: 'Missing fields' }, null);
+        if (!displayName || !email || !password || !role) {
+            return next({ status: 400, message: 'Missing fields' }, null);
         }
 
         const { uid } = await admin.auth().createUser({
@@ -17,7 +21,6 @@ const post = async (req, next) => {
         });
 
         await admin.auth().setCustomUserClaims(uid, { role });
-
         return next(null, { status: 201, message: 'created' });
 
     } catch (err) {
@@ -36,7 +39,7 @@ const mapUser = (user) => {
         role,
         lastSignInTime: user.metadata.lastSignInTime,
         creationTime: user.metadata.creationTime
-    }
+    };
 }
 
 const all = async (req, next) => {
@@ -68,14 +71,19 @@ const patch = async (req, next) => {
         const { localid } = req.headers;
         const { displayName, password, email, role } = req.body
 
-        if (!localid || !displayName || !password || !email || !role)
-            return next({ status:400, message: 'Missing fields' }, null);
+        // if (!localid || !displayName || !password || !email || !role)
+        if (!localid)
+            return next({ status: 400, message: 'Missing fields' }, null);
 
-        await admin.auth().updateUser(localid, { displayName, password, email });
-        await admin.auth().setCustomUserClaims(localid, { role });
+        if (displayName || password || email)
+            await admin.auth().updateUser(localid, { displayName, password, email });
+
+        if (role)
+            await admin.auth().setCustomUserClaims(localid, { role });
+        
         const user = await admin.auth().getUser(localid);
 
-        return next(null, { status: 204, data: mapUser(user) });
+        return next(null, { status: 200, data: mapUser(user) });
 
     } catch (err) {
         return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
@@ -93,7 +101,7 @@ const remove = async (req, next) => {
 }
 
 module.exports = {
-    post: post,
+    create: create,
     all: all,
     get: get,
     patch: patch,

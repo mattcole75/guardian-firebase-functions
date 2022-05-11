@@ -8,8 +8,8 @@ const auth = require('../controller/auth');
 
 module.exports = (app) => {
 
-    app.post('/users', (req, res) => {
-        auth.post(req, (err, user) => {
+    app.post('/user', (req, res) => {
+        auth.create(req, (err, user) => {
             res.set('Content-Type', 'application/json');
             if(err)
                 res.status(err.status).send(err);
@@ -19,11 +19,11 @@ module.exports = (app) => {
     });
 
     app.get('/users', (req, res) => {
+        
         auth.isAuthenticated(req, (err, authenticated) => {
             if (err)
                 res.status(err.status).send(err);
             else {
-
                 rules = {
                     roles: ['administrator']
                 }
@@ -85,7 +85,6 @@ module.exports = (app) => {
                     roles: ['administrator'],
                     allowSameUser: true
                 }
-                
                 auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if (err)
                         res.status(err.status).send(err);
@@ -111,7 +110,8 @@ module.exports = (app) => {
             else {
 
                 rules = {
-                    roles: ['administrator']
+                    roles: ['administrator'],
+                    allowSameUser: true
                 }
                 
                 auth.isAuthorised(req, authenticated, rules, (err, authorised) => {

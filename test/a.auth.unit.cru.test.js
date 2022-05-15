@@ -1,14 +1,14 @@
-// Description: Test the Create and Update functionality
+// Description: Test the Create, Update and Read functionality
 // Developer: Matt Cole
 // Date created: 2022-05-06
 // Change history:
 //  1. 
 
-const { endPoint, login } = require('./endPoint');
+const { endPoint, login } = require('./endPoint/endPoint');
 let users = require('./data/user.data');
 
 // auth tests
-describe('POST / GET / PATCH / DELETE auth requests', () => {
+describe('Test the create read update functions for auth', () => {
 
     it('should, confirm the server is up and ready', async () => {
         await endPoint.get('')
@@ -152,92 +152,6 @@ describe('POST / GET / PATCH / DELETE auth requests', () => {
         });
     });
 
-    it('should, update the Display Name for Rand', async () => {
-        
-        let user = users.find(element => element.displayName == 'Rand Al');
-        let index = users.indexOf(user);
-
-        await endPoint.patch('/user')
-            .set('Accept', 'application/json')
-            .set({
-                idToken: user.idToken,
-                localId: user.localId
-            })
-            .send({
-                displayName: 'Rand Al\'thor',
-            })
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .then(res => {
-                users[index].displayName = res.body.data.displayName;
-                console.log('users', users);
-            })
-    });
-
-    it('should, update the email for Rand', async () => {
-        
-        let user = users.find(element => element.displayName == 'Rand Al\'thor');
-        let index = users.indexOf(user);
-
-        await endPoint.patch('/user')
-            .set('Accept', 'application/json')
-            .set({
-                idToken: user.idToken,
-                localId: user.localId
-            })
-            .send({
-                email: 'rand.althor@system.com',
-            })
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .then(res => {
-                users[index].email = res.body.data.email;
-                console.log('users', users);
-            })
-    });
-
-    it('should, update the email for Rand', async () => {
-        
-        let user = users.find(element => element.displayName == 'Rand Al\'thor');
-        let index = users.indexOf(user);
-
-        await endPoint.patch('/user')
-            .set('Accept', 'application/json')
-            .set({
-                idToken: user.idToken,
-                localId: user.localId
-            })
-            .send({
-                email: 'rand.althor@system.com',
-            })
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .then(res => {
-                users[index].email = res.body.data.email;
-            })
-    });
-
-    it('should, update the password for Rand', async () => {
-        
-        let user = users.find(element => element.displayName == 'Rand Al\'thor');
-        let index = users.indexOf(user);
-
-        await endPoint.patch('/user')
-            .set('Accept', 'application/json')
-            .set({
-                idToken: user.idToken,
-                localId: user.localId
-            })
-            .send({
-                password: 'letmein2',
-            })
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .then(res => {
-                users[index].password = 'letmein2';
-            })
-    });
-
     users.forEach(user => {
         
         it('should, return the full list of users for a use with the administrator role', async () => {
@@ -257,37 +171,5 @@ describe('POST / GET / PATCH / DELETE auth requests', () => {
                     }
                 })
         });
-    });
-
-    users.forEach(user => {
-
-        it('should delete the user: ' + user.displayName, async() => {
-            await endPoint.delete('/user')
-                .set('Accept', 'application/json')
-                .set({
-                    idToken: user.idToken,
-                    localId: user.localId,
-                })
-                .send({
-                    localId: user.localId
-                })
-                .expect('Content-Type', /json/)
-                .expect(200)
-        });
-    });
-});
-
-// POST / PATCH / GET / DELETE records test
-describe('Record CRUD tests', () => {
-    it('should, create new records', async () => {
-        await endPoint.post('/record')
-            .send({
-                displayName: "Administrator",
-                email: 'admin@system.com',
-                password: 'letmein'
-            })
-            .set('Accept', 'application/json')
-            // .expect('Content-Type', /json/)
-            .expect(201)
     });
 });

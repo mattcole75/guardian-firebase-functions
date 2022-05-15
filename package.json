@@ -4,7 +4,10 @@
   "description": "firebase api",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "createUsers": "jest -t 'Test the create read update functions for auth'",
+    "deleteUsers": "jest -t 'Test the delete functions for auth'",
+    "createRequests": "jest -t 'Test the create read update functions for requests'"
   },
   "keywords": [
     "firebase",

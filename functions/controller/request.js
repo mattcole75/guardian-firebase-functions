@@ -1,10 +1,10 @@
-// Description: Provides the entry point for the firebase functions
+// Description: Provides the data functions for requests
 // Developer: Matt Cole
 // Date created: 2022-05-03
 // Change history:
 //  1. 
 
-const record = require('../repository/record');
+const request = require('../repository/request');
 // const authenticate = require('../auth/authenticated');
 // const authorise = require('../auth/authorised');
 
@@ -17,7 +17,27 @@ const create = (req, next) => {
     // else
     //     params = {...req.body, role: ['user'], disabled: false }; // disabled: true for production
 
-    record.create(req.body, (err, res) => {
+    request.create(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else {
+            next(null, res);
+        }
+    });
+}
+
+const patch = (req, next) => {
+    request.patch(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else {
+            next(null, res);
+        }
+    });
+}
+
+const get = (req, next) => {
+    request.get(req, (err, res) => {
         if(err)
             next(err, null);
         else {
@@ -27,5 +47,7 @@ const create = (req, next) => {
 }
 
 module.exports = {
-    create: create
+    create: create,
+    patch: patch,
+    get: get
 }

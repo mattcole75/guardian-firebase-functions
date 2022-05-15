@@ -5,7 +5,7 @@
 //  1. 
 
 const supertest = require('supertest');
-const { apiKey } = require('../functions/configuration/config');
+const { apiKey } = require('../../functions/configuration/config');
 
 const baseUrl = 'http://localhost:5001/breeze-49c1c/us-central1/api/';
 const firebaseLoginUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + apiKey;

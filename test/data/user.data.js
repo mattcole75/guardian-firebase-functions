@@ -2,9 +2,9 @@
 
 const users = [
         {
-            desription: 'create user, Rand al\'Thor',
-            displayName: 'Rand Al',
-            email: 'rand.al@system.com',
+            desription: 'create user, Rand Althor',
+            displayName: 'Rand Althor',
+            email: 'rand.althor@system.com',
             password: 'letmein',
             role: ['user'],
             localId: '',
@@ -81,8 +81,16 @@ const users = [
             role: ['administrator'],
             localId: '',
             idToken: ''
+        },
+        {
+            desription: 'create user, sysadmin',
+            displayName: 'sysadmin',
+            email: 'mcole.uk@gmail.com',
+            password: 'letmein',
+            role: ['administrator'],
+            localId: '',
+            idToken: ''
         }
-
     ]
 
 module.exports = users;

@@ -1,16 +1,8 @@
-// Description: Test the Create functionality
-// Developer: Matt Cole
-// Date created: 2022-05-06
-// Change history:
-//  1. 
-
 const { endPoint, login } = require('./endPoint/endPoint');
 const { requestFull } = require('./data/request.data');
 
 let users = require('./data/user.data');
 
-
-// auth tests
 describe('Test the create read update functions for requests', () => {
 
     it('should, create new records', async () => {
@@ -23,15 +15,15 @@ describe('Test the create read update functions for requests', () => {
 
     it('should, return a list of requests', async () => {
         await endPoint.get('./requests')
-                .set('Accept', 'application/json')
-                .set({
-                    // idToken: user.idToken,
-                    // localId: user.localId
-                })
-                .expect('Content-Type', /json/)
-                .then(res => {
-                    console.log(res.body);
-                })
+            .set('Accept', 'application/json')
+            .set({
+                // idToken: user.idToken,
+                // localId: user.localId
+            })
+            .expect('Content-Type', /json/)
+            .then(res => {
+                // console.log(res.body);
+            })
     });
 
 });

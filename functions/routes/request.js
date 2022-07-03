@@ -1,9 +1,3 @@
-// Description: Provides the routes for the planning & access requests
-// Developer: Matt Cole
-// Date created: 2022-05-06
-// Change history:
-//  1. 
-
 const request = require('../controller/request');
 
 module.exports = (app) => {

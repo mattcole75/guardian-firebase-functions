@@ -18,7 +18,13 @@ You can run the firebase functions locally on your environment. Use the followin
 In the functions/configuration directory create a file: config.js. The content of the file will be as follows:
 
 ```
-export const adminEmail = 'your.admin@email.com';
+const adminEmail = 'your.admin@email.com';
+const apiKey = 'your google API Key'
+
+module.exports = {
+    adminEmail: adminEmail,
+    apiKey: apiKey
+}
 ```
 
 ## Functions

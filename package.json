@@ -1,5 +1,5 @@
 {
-  "name": "breeze_serverless",
+  "name": "guardian_serverless",
   "version": "1.0.0",
   "description": "firebase api",
   "main": "index.js",
@@ -11,7 +11,7 @@
   },
   "keywords": [
     "firebase",
-    "breeze",
+    "guardian",
     "serverless",
     "roles",
     "auth"

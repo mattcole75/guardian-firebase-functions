@@ -1,13 +1,6 @@
-// Description: Test the Create, Update and Read functionality
-// Developer: Matt Cole
-// Date created: 2022-05-06
-// Change history:
-//  1. 
-
 const { endPoint, login } = require('./endPoint/endPoint');
 let users = require('./data/user.data');
 
-// auth tests
 describe('Test the create read update functions for auth', () => {
 
     it('should, confirm the server is up and ready', async () => {
@@ -164,7 +157,7 @@ describe('Test the create read update functions for auth', () => {
                 .expect('Content-Type', /json/)
                 .then(res => {
                     if(user.role.includes('administrator')){
-                        console.log(res.body);
+                        // console.log(res.body);
                         expect(res.body.status).toBe(200);
                     } else {
                         expect(res.body.status).toBe(403);

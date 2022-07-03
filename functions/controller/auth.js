@@ -1,9 +1,3 @@
-// Description: Provides the entry point for the firebase functions
-// Developer: Matt Cole
-// Date created: 2022-05-03
-// Change history:
-//  1. 
-
 const auth = require('../repository/auth');
 const authenticate = require('../auth/authenticated');
 const authorise = require('../auth/authorised');

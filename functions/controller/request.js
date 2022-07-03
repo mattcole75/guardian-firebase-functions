@@ -1,9 +1,3 @@
-// Description: Provides the data functions for requests
-// Developer: Matt Cole
-// Date created: 2022-05-03
-// Change history:
-//  1. 
-
 const request = require('../repository/request');
 // const authenticate = require('../auth/authenticated');
 // const authorise = require('../auth/authorised');

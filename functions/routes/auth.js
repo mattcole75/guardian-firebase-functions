@@ -1,9 +1,3 @@
-// Description: Provides the routes for the auth functionality
-// Developer: Matt Cole
-// Date created: 2022-05-03
-// Change history:
-//  1. 
-
 const auth = require('../controller/auth');
 
 module.exports = (app) => {

@@ -1,9 +1,3 @@
-// Description: The App configuration entry point set up
-// Developer: Matt Cole
-// Date created: 2022-05-03
-// Change history:
-//  1. 
-
 const express = require('express');
 const cors = require('cors')({origin: true});
 

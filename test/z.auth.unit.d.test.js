@@ -1,9 +1,3 @@
-// Description: Test the Delete functionality
-// Developer: Matt Cole
-// Date created: 2022-05-11
-// Change history:
-//  1. 
-
 const { endPoint, login } = require('./endPoint/endPoint');
 let users = require('./data/user.data');
 

@@ -22,5 +22,8 @@
     "convict": "^6.2.3",
     "jest": "^28.1.0",
     "supertest": "^6.2.3"
+  },
+  "dependencies": {
+    "firebase-functions": "^3.22.0"
   }
 }

@@ -18,6 +18,8 @@ describe('Test the create read update functions for auth', () => {
             .send({
                 displayName: "Administrator",
                 email: 'adminsystem.com',
+                phoneNumber: '+441514960452',
+                organisation: 'Bing Town Traders',
                 password: 'letmein'
             })
             .set('Accept', 'application/json')
@@ -33,6 +35,8 @@ describe('Test the create read update functions for auth', () => {
             .send({
                 displayName: "Administrator",
                 email: 'admin@systemcom',
+                phoneNumber: '+441514960452',
+                organisation: 'Bing Town Traders',
                 password: 'letmein'
             })
             .set('Accept', 'application/json')
@@ -43,13 +47,32 @@ describe('Test the create read update functions for auth', () => {
             })
     });
 
+    it('should, fail to create a user given an incorrectly formed phone number', async () => {
+        await endPoint.post('/user')
+            .send({
+                displayName: "Administrator",
+                email: 'admin@system.com',
+                phoneNumber: '07890123456',
+                organisation: 'Bing Town Traders',
+                password: 'letmein'
+            })
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(500)
+            .then(res => {
+                expect(res.body.message).toContain('The phone number must be a non-empty E.164 standard compliant');
+            })
+    });
+
     users.forEach(user => {
 
         it('should, create a user given the correct credentials for: ' + user.displayName, async () => {
             await endPoint.post('/user')
                 .send({
                     displayName: user.displayName,
-                    email: user.email,
+                    email: user.emailTemp,
+                    phoneNumber: user.phoneNumber,
+                    organisation: user.organisation,
                     password: user.password
                 })
                 .set('Accept', 'application/json')
@@ -64,7 +87,7 @@ describe('Test the create read update functions for auth', () => {
         it('should login, and return the user details and token given correct login credentials for: ' + user.displayName, async () => {
             await login.post('')
                 .send({
-                    email: user.email,
+                    email: user.emailTemp,
                     password: user.password,
                     returnSecureToken: true
                 })
@@ -74,7 +97,7 @@ describe('Test the create read update functions for auth', () => {
                 .then(res => {
                     expect(res.body).toBeDefined();
                     expect(res.body.displayName).toBe(user.displayName);
-                    expect(res.body.email).toBe(user.email);
+                    expect(res.body.email).toBe(user.emailTemp);
                     user.localId = res.body.localId;
                     user.idToken = res.body.idToken;
                 })
@@ -83,7 +106,7 @@ describe('Test the create read update functions for auth', () => {
 
     users.forEach(user => {
 
-        it('should update the user: ' + user.displayName, async () => {
+        it('should allow a user to update their own account: ' + user.displayName, async () => {
             await endPoint.patch('/user')
                 .set('Accept', 'application/json')
                 .set({
@@ -94,7 +117,34 @@ describe('Test the create read update functions for auth', () => {
                     displayName: user.displayName,
                     email: user.email,
                     password: user.password,
-                    role: user.role
+                    phoneNumber: user.phoneNumber,
+                    organisation: user.organisation
+                })
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .then(res => {
+                    // user.role = res.body.data.role;
+                })
+        });
+    });
+
+    users.forEach(user => {
+
+        it('should update the user: ' + user.displayName, async () => {
+            await endPoint.patch('/adminuser')
+                .set('Accept', 'application/json')
+                .set({
+                    idToken: users.find(usr => usr.displayName === 'sysadmin').idToken,
+                    localId: users.find(usr => usr.displayName === 'sysadmin').localId
+                })
+                .send({
+                    displayName: user.displayName,
+                    localId: user.localId,
+                    email: user.email,
+                    password: user.password,
+                    role: user.role,
+                    phoneNumber: user.phoneNumber,
+                    organisation: user.organisation
                 })
                 .expect('Content-Type', /json/)
                 .expect(200)
@@ -102,6 +152,7 @@ describe('Test the create read update functions for auth', () => {
                     user.role = res.body.data.role;
                 })
         });
+
     });
 
     users.forEach(user => {
@@ -127,8 +178,32 @@ describe('Test the create read update functions for auth', () => {
     });
 
     users.forEach(user => {
+
+        it('should deny access to user admin functions as a non-administrator role: ' + user.displayName, async () => {
+            await endPoint.patch('/adminuser')
+                .set('Accept', 'application/json')
+                .set({
+                    idToken: users.find(usr => usr.displayName === 'Rand Althor').idToken,
+                    localId: users.find(usr => usr.displayName === 'Rand Althor').localId
+                })
+                .send({
+                    displayName: user.displayName,
+                    localId: user.localId,
+                    email: user.email,
+                    password: user.password,
+                    role: user.role,
+                    phoneNumber: user.phoneNumber,
+                    organisation: user.organisation
+                })
+                .expect('Content-Type', /json/)
+                .expect(403)
+        });
+
+    });
+
+    users.forEach(user => {
         
-        it('should, return the full list of users for a use with the administrator role', async () => {
+        it('should, return a user given the local id can be used by the specific user and administrator role', async () => {
             await endPoint.get('./user')
                 .set('Accept', 'application/json')
                 .set({
@@ -139,8 +214,10 @@ describe('Test the create read update functions for auth', () => {
                 .then(res => {
                     user.localId = res.body.data.uid,
                     user.email = res.body.data.email,
+                    user.phoneNumber = res.body.data.phoneNumber,
                     user.displayName = res.body.data.displayName,
-                    user.role = res.body.data.role
+                    user.role = res.body.data.role,
+                    user.organisation = res.body.data.organisation
                 })
         });
     });

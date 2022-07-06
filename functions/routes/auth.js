@@ -18,6 +18,7 @@ module.exports = (app) => {
             if (err)
                 res.status(err.status).send(err);
             else {
+
                 rules = {
                     roles: ['administrator']
                 }
@@ -74,9 +75,7 @@ module.exports = (app) => {
             if (err)
                 res.status(err.status).send(err);
             else {
-
                 rules = {
-                    roles: ['administrator'],
                     allowSameUser: true
                 }
                 auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
@@ -84,6 +83,32 @@ module.exports = (app) => {
                         res.status(err.status).send(err);
                     else {
                         auth.patch(req, (err, user) => {
+                            res.set('Content-Type', 'application/json');
+                            if(err)
+                                res.status(err.status).send(err);
+                            else
+                                res.status(user.status).send(user);
+                        });
+                    }
+                }); 
+            }
+        })
+    });
+
+    app.patch('/adminuser', (req, res) => {
+
+        auth.isAuthenticated(req, (err, authenticated) => {
+            if (err)
+                res.status(err.status).send(err);
+            else {
+                rules = {
+                    roles: ['administrator'],
+                }
+                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                    if (err)
+                        res.status(err.status).send(err);
+                    else {
+                        auth.adminPatch(req, (err, user) => {
                             res.set('Content-Type', 'application/json');
                             if(err)
                                 res.status(err.status).send(err);

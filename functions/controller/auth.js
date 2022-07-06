@@ -71,6 +71,16 @@ const patch = (req, next) => {
     });  
 }
 
+const adminPatch = (req, next) => {
+    auth.adminPatch(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else {
+            next(null, res);
+        }
+    });  
+}
+
 const remove = (req, next) => {
     auth.remove(req, (err, res) => {
         if(err)
@@ -88,5 +98,6 @@ module.exports = {
     all: all,
     get: get,
     patch: patch,
+    adminPatch: adminPatch,
     remove: remove
 }

@@ -47,5 +47,17 @@ Returns:
     - 400 Bad request - validation failure
     - 500 Internal error message
 ```
+## Setup, development and testing guidlines 
+#### use with care and stay away from the production environment
+
+### To configure your firebase alias':
+```
+firebase use --add
+```
+
+### To switch between firebase instances:
+```
+firebase use "alias"
+```
 ## License
 [GNU Affero General Public License v3.0](https://choosealicense.com/licenses/agpl-3.0/)

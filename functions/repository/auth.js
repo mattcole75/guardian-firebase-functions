@@ -1,5 +1,6 @@
 const admin = require('firebase-admin');
 
+// post new user to the repository
 const create = async (req, next) => {
 
     try {
@@ -10,10 +11,12 @@ const create = async (req, next) => {
             return next({ status: 400, message: 'Missing fields' }, null);
         }
 
+        // create new users
         const { uid } = await admin.auth().createUser({
             displayName, email, phoneNumber, password, disabled
         });
 
+        // set their customer claims
         await admin.auth().setCustomUserClaims(uid, { role, organisation });
         return next(null, { status: 201, message: 'created' });
 
@@ -22,6 +25,7 @@ const create = async (req, next) => {
     }
 }
 
+// map user details for specified output function
 const mapUser = (user) => {
 
     // console.log('MCa', user);
@@ -29,6 +33,7 @@ const mapUser = (user) => {
     const role = customClaims.role ? customClaims.role : '';
     const organisation = customClaims.organisation ? customClaims.organisation : '';
 
+    // there is more user data here, this only returns the specified details below
     return {
         uid: user.uid,
         email: user.email,
@@ -43,6 +48,7 @@ const mapUser = (user) => {
     };
 }
 
+// query repository and return all users
 const all = async (req, next) => {
 
     try {
@@ -56,6 +62,7 @@ const all = async (req, next) => {
     }
 }
 
+// query repository and return a specified user
 const get = async (req, next) => {
     try {
         const { localid } = req.headers;
@@ -67,6 +74,7 @@ const get = async (req, next) => {
     }
 }
 
+// update the repository for a specified user
 const patch = async (req, next) => {
 
     try {
@@ -82,9 +90,11 @@ const patch = async (req, next) => {
         let user = await admin.auth().getUser(localid);
         const role = user.customClaims.role;
 
+        // first update the users standard details
         await admin.auth().updateUser(localid, { displayName, email, phoneNumber, password });
+        // second update the custom claims details
         await admin.auth().setCustomUserClaims(localid, { organisation, role });
-        
+        // get the updated user record
         user = await admin.auth().getUser(localid);
 
         return next(null, { status: 200, data: mapUser(user) });
@@ -94,18 +104,20 @@ const patch = async (req, next) => {
     }
 }
 
+// update the repository for a specified user including roles
 const adminPatch = async (req, next) => {
 
     try {
-        // const { localid } = req.headers;
         const { displayName, localId, password, email, role, phoneNumber, organisation } = req.body
 
         if (!localId || !displayName || !password || !email || !role || !phoneNumber || !organisation)
             return next({ status: 400, message: 'Missing fields' }, null);
 
+        // first update the users standard details
         await admin.auth().updateUser(localId, { displayName, email, phoneNumber, password });
+        // second update the custom claims details
         await admin.auth().setCustomUserClaims(localId, { organisation, role });
-        
+        // get the updated user record
         const user = await admin.auth().getUser(localId);
 
         return next(null, { status: 200, data: mapUser(user) });
@@ -115,6 +127,7 @@ const adminPatch = async (req, next) => {
     }
 }
 
+// delete user from the repository
 const remove = async (req, next) => {
    try {
        const { localId } = req.body

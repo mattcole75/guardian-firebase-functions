@@ -6,15 +6,19 @@ const authorise = (req, authenticated, rules, next) => {
     const { role, email, uid } = authenticated.data;
     const { roles, allowSameUser } = rules;
 
+    // authorise if this is the pre configured administrator account
     if (email === adminEmail)
         return next(null, { status: 200, message: 'OK' });
     
-    if (allowSameUser && localid && uid === localid)
+    // authorise if the allow same user flag is true and the id's match
+    if ((allowSameUser && localid) && (uid === localid))
         return next(null, { status: 200, message: 'OK' });
-         
+
+    // check the user has a least one role
     if (!role)
         return next({ status: 403, message: 'Forbidden' }, null);
-         
+    
+    // authorise if the user has the correct roll allocated to their account   
     if(role.every(r => roles.includes(r)))
         return next(null, { status: 200, message: 'OK'});
 

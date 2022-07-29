@@ -26,6 +26,7 @@ describe('Test the create read update functions for auth', () => {
             .expect('Content-Type', /json/)
             .expect(500)
             .then(res => {
+                // console.log(res);
                 expect(res.body.message).toContain('The email address is improperly formatted');
             })
     });
@@ -204,7 +205,7 @@ describe('Test the create read update functions for auth', () => {
     users.forEach(user => {
         
         it('should, return a user given the local id can be used by the specific user and administrator role', async () => {
-            await endPoint.get('./user')
+            await endPoint.get('/user')
                 .set('Accept', 'application/json')
                 .set({
                     idToken: user.idToken,
@@ -225,7 +226,7 @@ describe('Test the create read update functions for auth', () => {
     users.forEach(user => {
         
         it('should, return the full list of users for a use with the administrator role', async () => {
-            await endPoint.get('./users')
+            await endPoint.get('/users')
                 .set('Accept', 'application/json')
                 .set({
                     idToken: user.idToken,

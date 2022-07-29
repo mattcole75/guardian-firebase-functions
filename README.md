@@ -4,10 +4,15 @@ The functions defined below enable role based authorisation to resourse held in 
 You can learn more about firebase functions on the Firebase website [Cloud Functions for Firebase](https://firebase.google.com/docs/functions)
 
 ## Installation
-Use the package manager [npm](https://github.com/mattcole75/firebase-functions) to install the firebase functions once you have cloned the repository. Then...
+Use the package manager [npm](https://github.com/mattcole75/guardian-firebase-functions) to install the firebase functions once you have cloned the repository. Then run npm install in the root directory as well as the functions directory
 
 ```bash
 npm install
+```
+
+You will also need firebase-tools
+```bash
+npm install -g firebase-tools 
 ```
 
 ## Configuration

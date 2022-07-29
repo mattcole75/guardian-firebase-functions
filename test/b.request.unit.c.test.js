@@ -14,7 +14,7 @@ describe('Test the create read update functions for requests', () => {
     });
 
     it('should, return a list of requests', async () => {
-        await endPoint.get('./requests')
+        await endPoint.get('/requests')
             .set('Accept', 'application/json')
             .set({
                 // idToken: user.idToken,

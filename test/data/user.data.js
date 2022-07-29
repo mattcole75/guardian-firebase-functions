@@ -1,5 +1,6 @@
 'use strict';
 
+// test data to create users
 const users = [
         {
             desription: 'create user, Rand Althor',

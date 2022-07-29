@@ -33,16 +33,19 @@ module.exports = {
 ```
 
 ## Functions
+The url addresses below assume you are running the firebase funcation emulator locally.
 
 ### POST Create new user:
 
 ```
-POST http://localhost:1337/auth/api/0.1/user
+POST http://localhost:5001/guardian-d746f/us-central1/api/user
 
-Requires JSON Body:
+Requires JSON body:
     {
         displayName: 'new display name',
         email: 'a valid email address',
+        phoneNumber: 'phone number e.164 +44 7911 123456',
+        organisation: 'an associated organisation',
         password: 'a hashed 256 character password'
     }
 
@@ -50,6 +53,119 @@ Returns:
     - 201 Created
     - 400 Duplicate entry
     - 400 Bad request - validation failure
+    - 500 Internal error message
+```
+### GET user details:
+```
+GET http://localhost:5001/guardian-d746f/us-central1/api/user
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Returns:
+    - 200 Ok
+        - localId
+        - email
+        - phoneNumber
+        - displayName
+        - role
+        - organisation
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+### GET all user details:
+```
+GET http://localhost:5001/guardian-d746f/us-central1/api/users
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Returns:
+    - 200 Ok [array]
+        - localId
+        - email
+        - phoneNumber
+        - displayName
+        - role
+        - organisation
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+### PATCH user details:
+```
+PATCH http://localhost:5001/guardian-d746f/us-central1/api/user
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Requires JSON body:
+    {
+        displayName: 'the display name',
+        email: 'a valid email address',
+        phoneNumber: 'phone number e.164 +44 7911 123456',
+        organisation: 'an associated organisation'
+        password: 'a hashed 256 character password'
+    }
+
+Returns:
+    - 200 ok
+    - 400 Missing fields
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+### PATCH user details administrator:
+```
+PATCH http://localhost:5001/guardian-d746f/us-central1/api/adminuser
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Requires JSON body:
+    {
+        displayName: 'the display name',
+        email: 'a valid email address',
+        phoneNumber: 'phone number e.164 +44 7911 123456',
+        organisation: 'an associated organisation'
+        role: ['designated role']
+        password: 'a hashed 256 character password'
+    }
+
+Returns:
+    - 200 ok
+    - 400 Missing fields
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+### DELETE user:
+```
+DELETE http://localhost:5001/guardian-d746f/us-central1/api/user
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Returns:
+    - 200 ok
+    - 401 Unauthorised
+    - 403 Forbidden
     - 500 Internal error message
 ```
 ## Setup, development and testing guidlines 

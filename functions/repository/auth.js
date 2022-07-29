@@ -5,9 +5,9 @@ const create = async (req, next) => {
 
     try {
 
-        const { displayName, email, password, disabled, role, phoneNumber, organisation } = req;
+        const { displayName, email, password, disabled, roles, phoneNumber, organisation } = req;
 
-        if (!displayName || !email || !password || !role || !phoneNumber || !organisation) {
+        if (!displayName || !email || !password || !roles || !phoneNumber || !organisation) {
             return next({ status: 400, message: 'Missing fields' }, null);
         }
 
@@ -17,7 +17,7 @@ const create = async (req, next) => {
         });
 
         // set their customer claims
-        await admin.auth().setCustomUserClaims(uid, { role, organisation });
+        await admin.auth().setCustomUserClaims(uid, { roles, organisation });
         return next(null, { status: 201, message: 'created' });
 
     } catch (err) {
@@ -28,20 +28,19 @@ const create = async (req, next) => {
 // map user details for specified output function
 const mapUser = (user) => {
 
-    // console.log('MCa', user);
-    const customClaims = (user.customClaims || { role: '', organisation: '' });
-    const role = customClaims.role ? customClaims.role : '';
+    const customClaims = (user.customClaims || { roles: '', organisation: '' });
+    const roles = customClaims.roles ? customClaims.roles : '';
     const organisation = customClaims.organisation ? customClaims.organisation : '';
 
-    // there is more user data here, this only returns the specified details below
+    // there is more user data here, this function only returns the specified details below
     return {
         uid: user.uid,
         email: user.email,
         emailVerified: user.emailVerified,
         displayName: user.displayName,
         phoneNumber: user.phoneNumber,
-        role,
         organisation,
+        roles,
         lastSignInTime: user.metadata.lastSignInTime,
         creationTime: user.metadata.creationTime,
         disabled: user.disabled
@@ -88,12 +87,12 @@ const patch = async (req, next) => {
         // if you don't preserve the role the custom claims will be overwritten and lost
 
         let user = await admin.auth().getUser(localid);
-        const role = user.customClaims.role;
+        const roles = user.customClaims.roles;
 
         // first update the users standard details
         await admin.auth().updateUser(localid, { displayName, email, phoneNumber, password });
         // second update the custom claims details
-        await admin.auth().setCustomUserClaims(localid, { organisation, role });
+        await admin.auth().setCustomUserClaims(localid, { organisation, roles });
         // get the updated user record
         user = await admin.auth().getUser(localid);
 
@@ -108,15 +107,15 @@ const patch = async (req, next) => {
 const adminPatch = async (req, next) => {
 
     try {
-        const { displayName, localId, password, email, role, phoneNumber, organisation } = req.body
+        const { displayName, localId, password, email, roles, phoneNumber, organisation } = req.body
 
-        if (!localId || !displayName || !password || !email || !role || !phoneNumber || !organisation)
+        if (!localId || !displayName || !password || !email || !roles || !phoneNumber || !organisation)
             return next({ status: 400, message: 'Missing fields' }, null);
 
         // first update the users standard details
         await admin.auth().updateUser(localId, { displayName, email, phoneNumber, password });
         // second update the custom claims details
-        await admin.auth().setCustomUserClaims(localId, { organisation, role });
+        await admin.auth().setCustomUserClaims(localId, { organisation, roles });
         // get the updated user record
         const user = await admin.auth().getUser(localId);
 

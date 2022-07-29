@@ -10,7 +10,7 @@ const users = [
             phoneNumber: '+441514960453',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['user'],
+            roles: ['user'],
             localId: '',
             idToken: ''
         },
@@ -22,7 +22,7 @@ const users = [
             phoneNumber: '+441514960454',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['user'],
+            roles: ['user'],
             localId: '',
             idToken: ''
         },
@@ -34,7 +34,7 @@ const users = [
             phoneNumber: '+441514960455',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['reviewer'],
+            roles: ['reviewer'],
             localId: '',
             idToken: ''
         },
@@ -46,7 +46,7 @@ const users = [
             phoneNumber: '+441514960456',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['planner'],
+            roles: ['planner'],
             localId: '',
             idToken: ''
         },
@@ -58,7 +58,7 @@ const users = [
             phoneNumber: '+441514960457',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['coordinator'],
+            roles: ['coordinator'],
             localId: '',
             idToken: ''
         },
@@ -70,7 +70,7 @@ const users = [
             phoneNumber: '+441514960458',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['pnm'],
+            roles: ['pnm'],
             localId: '',
             idToken: ''
         },
@@ -82,7 +82,7 @@ const users = [
             phoneNumber: '+441514960459',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['pic'],
+            roles: ['pic'],
             localId: '',
             idToken: ''
         },
@@ -94,7 +94,7 @@ const users = [
             phoneNumber: '+441514960460',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['picop'],
+            roles: ['picop'],
             localId: '',
             idToken: ''
         },
@@ -106,7 +106,7 @@ const users = [
             phoneNumber: '+441514960461',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['administrator'],
+            roles: ['administrator'],
             localId: '',
             idToken: ''
         },
@@ -118,7 +118,7 @@ const users = [
             phoneNumber: '+441514960462',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            role: ['administrator'],
+            roles: ['administrator'],
             localId: '',
             idToken: ''
         }

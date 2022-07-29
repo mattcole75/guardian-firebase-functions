@@ -3,8 +3,8 @@ const { adminEmail } = require('../configuration/config');
 const authorise = (req, authenticated, rules, next) => {
 
     const { localid } = req.headers;
-    const { role, email, uid } = authenticated.data;
-    const { roles, allowSameUser } = rules;
+    const { roles, email, uid } = authenticated.data;
+    const { allowSameUser } = rules;
 
     // authorise if this is the pre configured administrator account
     if (email === adminEmail)
@@ -15,11 +15,11 @@ const authorise = (req, authenticated, rules, next) => {
         return next(null, { status: 200, message: 'OK' });
 
     // check the user has a least one role
-    if (!role)
+    if (!roles)
         return next({ status: 403, message: 'Forbidden' }, null);
     
     // authorise if the user has the correct roll allocated to their account   
-    if(role.every(r => roles.includes(r)))
+    if(roles.every(r => rules.roles.includes(r)))
         return next(null, { status: 200, message: 'OK'});
 
     return next( { status: 403, message: 'Forbidden' }, null);

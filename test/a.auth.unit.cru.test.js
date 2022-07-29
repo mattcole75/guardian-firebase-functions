@@ -143,14 +143,14 @@ describe('Test the create read update functions for auth', () => {
                     localId: user.localId,
                     email: user.email,
                     password: user.password,
-                    role: user.role,
+                    roles: user.roles,
                     phoneNumber: user.phoneNumber,
                     organisation: user.organisation
                 })
                 .expect('Content-Type', /json/)
                 .expect(200)
                 .then(res => {
-                    user.role = res.body.data.role;
+                    user.roles = res.body.data.roles;
                 })
         });
 
@@ -192,7 +192,7 @@ describe('Test the create read update functions for auth', () => {
                     localId: user.localId,
                     email: user.email,
                     password: user.password,
-                    role: user.role,
+                    roles: user.roles,
                     phoneNumber: user.phoneNumber,
                     organisation: user.organisation
                 })
@@ -217,7 +217,7 @@ describe('Test the create read update functions for auth', () => {
                     user.email = res.body.data.email,
                     user.phoneNumber = res.body.data.phoneNumber,
                     user.displayName = res.body.data.displayName,
-                    user.role = res.body.data.role,
+                    user.roles = res.body.data.roles,
                     user.organisation = res.body.data.organisation
                 })
         });
@@ -234,7 +234,7 @@ describe('Test the create read update functions for auth', () => {
                 })
                 .expect('Content-Type', /json/)
                 .then(res => {
-                    if(user.role.includes('administrator')){
+                    if(user.roles.includes('administrator')){
                         // console.log(res.body);
                         expect(res.body.status).toBe(200);
                     } else {

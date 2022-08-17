@@ -16,7 +16,6 @@ module.exports = (app) => {
 
     // return all users endpoint api
     app.get('/users', (req, res) => {
-        
         auth.isAuthenticated(req, (err, authenticated) => {
             if (err)
                 res.status(err.status).send(err);

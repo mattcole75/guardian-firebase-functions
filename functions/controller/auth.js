@@ -10,7 +10,7 @@ const create = (req, next) => {
     
     // check if the account being posted is the official configured email address
     if (req.body.email === adminEmail)
-        params = {...req.body, roles: ['administrator'], disabled: false };
+        params = {...req.body, roles: ['user', 'administrator'], disabled: false };
     else
         params = {...req.body, roles: ['user'], disabled: false }; // disabled: true for production
 

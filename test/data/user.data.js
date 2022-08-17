@@ -12,7 +12,8 @@ const users = [
             password: 'letmein',
             roles: ['user'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         },
         {
             desription: 'create user, Chade Fallstar',
@@ -24,7 +25,8 @@ const users = [
             password: 'letmein',
             roles: ['user'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         },
         {
             desription: 'create user, Althea Vestrit',
@@ -34,9 +36,10 @@ const users = [
             phoneNumber: '+441514960455',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['reviewer'],
+            roles: ['user', 'reviewer'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         },
         {
             desription: 'create user, Fitz Farseer',
@@ -46,9 +49,10 @@ const users = [
             phoneNumber: '+441514960456',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['planner'],
+            roles: ['user', 'planner'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         },
         {
             desription: 'create user, Tony Ezekiel',
@@ -58,9 +62,10 @@ const users = [
             phoneNumber: '+441514960457',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['coordinator'],
+            roles: ['user', 'coordinator'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         },
         {
             desription: 'create user, Kennit Ludluck',
@@ -70,9 +75,10 @@ const users = [
             phoneNumber: '+441514960458',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['pnm'],
+            roles: ['user'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         },
         {
             desription: 'create user, Malta Vestrit',
@@ -82,9 +88,10 @@ const users = [
             phoneNumber: '+441514960459',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['pic'],
+            roles: ['user'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         },
         {
             desription: 'create user, Reyn Khuprus',
@@ -94,9 +101,10 @@ const users = [
             phoneNumber: '+441514960460',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['picop'],
+            roles: ['user'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         },
         {
             desription: 'create user, Kyle Haven',
@@ -106,21 +114,23 @@ const users = [
             phoneNumber: '+441514960461',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['administrator'],
+            roles: ['user', 'administrator'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         },
         {
             desription: 'create user, sysadmin',
             displayName: 'sysadmin',
-            email: 'sys.admin@btt.com',
-            emailTemp: 'sys.admin@system.com',
-            phoneNumber: '+441514960462',
+            email: 'mcole@metrolink.co.uk',
+            emailTemp: 'mcole@metrolink.co.uk',
+            phoneNumber: '+447480927388',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['administrator'],
+            roles: ['user', 'administrator'],
             localId: '',
-            idToken: ''
+            idToken: '',
+            disabled: false
         }
     ]
 

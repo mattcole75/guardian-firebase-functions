@@ -115,11 +115,11 @@ describe('Test the create read update functions for auth', () => {
                     localId: user.localId
                 })
                 .send({
-                    displayName: user.displayName,
+                    // displayName: user.displayName,
                     email: user.email,
-                    password: user.password,
-                    phoneNumber: user.phoneNumber,
-                    organisation: user.organisation
+                    // password: user.password,
+                    // phoneNumber: user.phoneNumber,
+                    // organisation: user.organisation
                 })
                 .expect('Content-Type', /json/)
                 .expect(200)
@@ -139,13 +139,10 @@ describe('Test the create read update functions for auth', () => {
                     localId: users.find(usr => usr.displayName === 'sysadmin').localId
                 })
                 .send({
-                    displayName: user.displayName,
+                   
                     localId: user.localId,
-                    email: user.email,
-                    password: user.password,
                     roles: user.roles,
-                    phoneNumber: user.phoneNumber,
-                    organisation: user.organisation
+                    disabled: user.disabled
                 })
                 .expect('Content-Type', /json/)
                 .expect(200)
@@ -188,13 +185,10 @@ describe('Test the create read update functions for auth', () => {
                     localId: users.find(usr => usr.displayName === 'Rand Althor').localId
                 })
                 .send({
-                    displayName: user.displayName,
+                    
                     localId: user.localId,
-                    email: user.email,
-                    password: user.password,
                     roles: user.roles,
-                    phoneNumber: user.phoneNumber,
-                    organisation: user.organisation
+                    disabled: user.disabled
                 })
                 .expect('Content-Type', /json/)
                 .expect(403)

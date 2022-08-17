@@ -75,22 +75,36 @@ const get = async (req, next) => {
 
 // update the repository for a specified user
 const patch = async (req, next) => {
-
     try {
-        const { localid } = req.headers;
-        const { displayName, password, email, phoneNumber, organisation } = req.body
+        let { localid } = req.headers;
+        let displayName = req.body.displayName;
+        let email = req.body.email;
+        let phoneNumber = req.body.phoneNumber;
+        let organisation = req.body.organisation;
 
-        if (!localid || !displayName || !password || !email || !phoneNumber || !organisation)
+        if (!localid && (!displayName || !email || !phoneNumber || !organisation))
             return next({ status: 400, message: 'Missing fields' }, null);
 
         // get the user user details in order to preserve the role allocation.
         // if you don't preserve the role the custom claims will be overwritten and lost
 
         let user = await admin.auth().getUser(localid);
+
+        // roles can only be set by an administrator so copy before update
         const roles = user.customClaims.roles;
 
+        // copy values if that are not changing
+        if(!displayName)
+            displayName = user.displayName;
+        if(!email)
+            email = user.email;
+        if(!phoneNumber)
+            phoneNumber = user.phoneNumber;
+        if(!organisation)
+            organisation = user.customClaims.organisation;
+
         // first update the users standard details
-        await admin.auth().updateUser(localid, { displayName, email, phoneNumber, password });
+        await admin.auth().updateUser(localid, { displayName, email, phoneNumber });
         // second update the custom claims details
         await admin.auth().setCustomUserClaims(localid, { organisation, roles });
         // get the updated user record
@@ -107,17 +121,30 @@ const patch = async (req, next) => {
 const adminPatch = async (req, next) => {
 
     try {
-        const { displayName, localId, password, email, roles, phoneNumber, organisation } = req.body
+        const { localId, roles, disabled } = req.body;
 
-        if (!localId || !displayName || !password || !email || !roles || !phoneNumber || !organisation)
+        let displayName;
+        let email;
+        let phoneNumber;
+        let organisation;
+
+        if (!localId && !roles && !disabled)
             return next({ status: 400, message: 'Missing fields' }, null);
+        
+        let user = await admin.auth().getUser(localId);
+
+        // copy user values for no data loss
+        displayName = user.displayName;
+        email = user.email;
+        phoneNumber = user.phoneNumber;
+        organisation = user.customClaims.organisation;
 
         // first update the users standard details
-        await admin.auth().updateUser(localId, { displayName, email, phoneNumber, password });
+        await admin.auth().updateUser(localId, { displayName, email, phoneNumber, disabled });
         // second update the custom claims details
         await admin.auth().setCustomUserClaims(localId, { organisation, roles });
         // get the updated user record
-        const user = await admin.auth().getUser(localId);
+        user = await admin.auth().getUser(localId);
 
         return next(null, { status: 200, data: mapUser(user) });
 

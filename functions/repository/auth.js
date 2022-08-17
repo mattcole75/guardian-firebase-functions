@@ -50,9 +50,21 @@ const mapUser = (user) => {
 // query repository and return all users
 const all = async (req, next) => {
 
+    const { param } = req.headers
+
     try {
-        const listUsers = await admin.auth().listUsers();
-        const users = listUsers.users.map(mapUser);
+        let listUsers = await admin.auth().listUsers();
+
+        let filterListUsers = [...listUsers.users];
+        let res;
+
+        if(param)
+            res = filterListUsers.filter(usr => usr.email.includes(param));
+        
+        if(res)
+            filterListUsers = res;
+
+        const users = filterListUsers.map(mapUser);
 
         next(null, { status: 200, data: users })
 

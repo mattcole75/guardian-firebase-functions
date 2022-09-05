@@ -1,52 +1,123 @@
-const admin = require('firebase-admin');
+// const admin = require('firebase-admin');
+const moment = require('moment');
+const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+const db = getFirestore();
 
-const create = async (req, next) => {
+const userCreateRequest = async (req, next) => {
 
     try {
+        await db.collection('requests')
+            .add({ ...req.body, localId: req.headers.localid, status: 'Draft', edited: moment().format(), created: moment().format() })
+            .then(res => { 
+                return next(null, { status: 201, result: { id: res.id } });
+            });
+    } catch (err) {
+        return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+    }
+}
 
-        const ref = admin.database().ref('requests');
+const userPatchRequest = async (req, next) => {
 
-        const newPostRef = ref.push();;
+    const { param } = req.headers;
+
+    try {
+        await db.collection('requests').doc(param)
+            .set({ ...req.body, edited: moment().format() }, { merge: true })
+            .then(res => {
+                return next(null, { status: 200, result: 'OK' });
+            });
         
-        await newPostRef.set(req.body);
+    } catch (err) {
+        return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+    }
+}
 
-        return next(null, { status: 201, message: 'created' });
+const userGetRequests = async (req, next) => {
+
+    const { localid } = req.headers;
+    let result = [];
+
+    try {
+        const requests = db.collection('requests');
+        await requests.where('localId', '==', localid).get()
+            .then(res => {
+                res.forEach((doc) => {
+                    result.push({ [doc.id]: doc.data() });
+                })
+            })
+            .then(() => {
+                return next(null, { status: 200, result: result });
+            });;
 
     } catch (err) {
         return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
     }
 }
 
-const patch = async (req, next) => {
+const coordinatorGetRequests  = async (req, next) => {
+
+    const { localid } = req.headers;
+    let result = [];
 
     try {
-
-        const requestRef = ref.child('requests');
-
-        const ref = requestRef.child(req.headers.id);
-
-        await ref.update(req.body);
-
-        return next(null, { status: 201, message: 'created' });
+        const requests = db.collection('requests');
+        await requests.where('status', '==', 'Submitted').get()
+            .then(res => {
+                res.forEach((doc) => {
+                    result.push({ [doc.id]: doc.data() });
+                })
+            })
+            .then(() => {
+                return next(null, { status: 200, result: result });
+            });;
 
     } catch (err) {
         return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
     }
 }
 
-const get = async (req, next) => {
+const plannerGetRequests  = async (req, next) => {
+
+    const { localid } = req.headers;
+    let result = [];
 
     try {
+        const requests = db.collection('requests');
+        await requests
+            .where('status', 'in', ['Submitted', 'Under Review'])
+            .get()
+            .then(res => {
+                res.forEach((doc) => {
+                    result.push({ [doc.id]: doc.data() });
+                })
+            })
+            .then(() => {
+                return next(null, { status: 200, result: result });
+            });;
 
-        const ref = admin.database().ref('requests');
+    } catch (err) {
+        return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+    }
+}
 
-        let res;
+const publicGetRequests  = async (req, next) => {
 
-        await ref.orderByChild('completed').equalTo(null).once('value', (snapshot) => {
-            res = snapshot.val();
-        });
+    const { localid } = req.headers;
+    let result = [];
 
-        return next(null, { status: 200, data: res });
+    try {
+        const requests = db.collection('requests');
+        await requests
+            .where('status', 'in', ['Submitted', 'Under Review', 'Granted', 'Denied'])
+            .get()
+            .then(res => {
+                res.forEach((doc) => {
+                    result.push({ [doc.id]: doc.data() });
+                })
+            })
+            .then(() => {
+                return next(null, { status: 200, result: result });
+            });;
 
     } catch (err) {
         return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
@@ -64,7 +135,10 @@ const get = async (req, next) => {
 //    }
 
 module.exports = {
-    create: create,
-    patch: patch,
-    get: get
+    userCreateRequest: userCreateRequest,
+    userPatchRequest: userPatchRequest,
+    userGetRequests: userGetRequests,
+    coordinatorGetRequests: coordinatorGetRequests,
+    plannerGetRequests: plannerGetRequests,
+    publicGetRequests: publicGetRequests
 }

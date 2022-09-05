@@ -80,7 +80,6 @@ describe('Test the create read update functions for auth', () => {
                 .expect('Content-Type', /json/)
                 .expect(201)
         });
-
     });
 
     users.forEach(user => {

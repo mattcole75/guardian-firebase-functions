@@ -100,6 +100,25 @@ const remove = (req, next) => {
     });  
 }
 
+// return a list of enabled planners
+const getPlanners = (req, next) => {
+    auth.all(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else {
+            let planners = []
+
+            // loop through all users and pull out enabled users who have the planner role associated
+            Object.keys(res.data).forEach(key => {
+                if(res.data[key].roles.includes('planner') && !res.data[key].disabled)
+                    planners.push(res.data[key].displayName);
+            });
+
+            next(null, {status: res.status, planners: planners});
+        }
+    });
+}
+
 module.exports = {
     create: create,
     isAuthenticated: isAuthenticated,
@@ -108,5 +127,6 @@ module.exports = {
     get: get,
     patch: patch,
     adminPatch: adminPatch,
-    remove: remove
+    remove: remove,
+    getPlanners: getPlanners
 }

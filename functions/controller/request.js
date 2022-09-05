@@ -2,16 +2,9 @@ const request = require('../repository/request');
 // const authenticate = require('../auth/authenticated');
 // const authorise = require('../auth/authorised');
 
-const create = (req, next) => {
+const userCreateRequest = (req, next) => {
 
-    // let params;
-    
-    // if (req.body.email === adminEmail)
-    //     params = {...req.body, role: ['administrator'], disabled: false };
-    // else
-    //     params = {...req.body, role: ['user'], disabled: false }; // disabled: true for production
-
-    request.create(req, (err, res) => {
+    request.userCreateRequest(req, (err, res) => {
         if(err)
             next(err, null);
         else {
@@ -20,8 +13,8 @@ const create = (req, next) => {
     });
 }
 
-const patch = (req, next) => {
-    request.patch(req, (err, res) => {
+const userPatchRequest = (req, next) => {
+    request.userPatchRequest(req, (err, res) => {
         if(err)
             next(err, null);
         else {
@@ -30,8 +23,38 @@ const patch = (req, next) => {
     });
 }
 
-const get = (req, next) => {
-    request.get(req, (err, res) => {
+const userGetRequests = (req, next) => {
+    request.userGetRequests(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else {
+            next(null, res);
+        }
+    });
+}
+
+const coordinatorGetRequests = (req, next) => {
+    request.coordinatorGetRequests(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else {
+            next(null, res);
+        }
+    });
+}
+
+const plannerGetRequests = (req, next) => {
+    request.plannerGetRequests(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else {
+            next(null, res);
+        }
+    });
+}
+
+const publicGetRequests = (req, next) => {
+    request.publicGetRequests(req, (err, res) => {
         if(err)
             next(err, null);
         else {
@@ -41,7 +64,10 @@ const get = (req, next) => {
 }
 
 module.exports = {
-    create: create,
-    patch: patch,
-    get: get
+    userCreateRequest: userCreateRequest,
+    userPatchRequest: userPatchRequest,
+    userGetRequests: userGetRequests,
+    coordinatorGetRequests: coordinatorGetRequests,
+    plannerGetRequests: plannerGetRequests,
+    publicGetRequests: publicGetRequests
 }

@@ -17,7 +17,7 @@ module.exports = (app) => {
     // return all users endpoint api
     app.get('/users', (req, res) => {
         auth.isAuthenticated(req, (err, authenticated) => {
-            if (err)
+            if(err)
                 res.status(err.status).send(err);
             else {
 
@@ -50,7 +50,7 @@ module.exports = (app) => {
 
         // test the requesting users credentials
         auth.isAuthenticated(req, (err, authenticated) => {
-            if (err)
+            if(err)
                 res.status(err.status).send(err);
             else {
 
@@ -62,7 +62,7 @@ module.exports = (app) => {
                 
                 // check person is authorised to use this endpoint api
                 auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
-                    if (err)
+                    if(err)
                         res.status(err.status).send(err);
                     else {
                         auth.get(req, (err, user) => {
@@ -83,7 +83,7 @@ module.exports = (app) => {
 
         // test the requesting users credentials
         auth.isAuthenticated(req, (err, authenticated) => {
-            if (err)
+            if(err)
                 res.status(err.status).send(err);
             else {
 
@@ -94,7 +94,7 @@ module.exports = (app) => {
 
                 // check person is authorised to use this endpoint api
                 auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
-                    if (err)
+                    if(err)
                         res.status(err.status).send(err);
                     else {
                         auth.patch(req, (err, user) => {
@@ -115,7 +115,7 @@ module.exports = (app) => {
 
         // test the requesting users credentials
         auth.isAuthenticated(req, (err, authenticated) => {
-            if (err)
+            if(err)
                 res.status(err.status).send(err);
             else {
 
@@ -126,7 +126,7 @@ module.exports = (app) => {
 
                 // check person is authorised to use this endpoint api
                 auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
-                    if (err)
+                    if(err)
                         res.status(err.status).send(err);
                     else {
                         auth.adminPatch(req, (err, user) => {
@@ -147,7 +147,7 @@ module.exports = (app) => {
 
         // test the requesting users credentials
         auth.isAuthenticated(req, (err, authenticated) => {
-            if (err)
+            if(err)
                 res.status(err.status).send(err);
             else {
 
@@ -159,7 +159,7 @@ module.exports = (app) => {
                 
                 // check person is authorised to use this endpoint api
                 auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
-                    if (err)
+                    if(err)
                         res.status(err.status).send(err);
                     else {
                         auth.remove(req, (err, user) => {
@@ -168,6 +168,36 @@ module.exports = (app) => {
                                 res.status(err.status).send(err);
                             else
                                 res.status(user.status).send(user);
+                        });
+                    }
+                }); 
+            }
+        })
+    });
+
+    app.get('/planners', (req, res) => {
+        auth.isAuthenticated(req, (err, authenticated) => {
+            if(err)
+                res.status(err.status).send(err);
+            else {
+
+                // who can use this endpoint api?
+                rules = {
+                    roles: ['coordinator', 'planner']
+                }
+                
+                // check person is authorised to use this endpoint api
+                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                    if (err) {
+                        res.status(err.status).send(err);
+                    }
+                    else {
+                        auth.getPlanners(req, (err, data) => {
+                            res.set('Content-Type', 'application/json');
+                            if(err)
+                                res.status(err.status).send(err);
+                            else
+                                res.status(data.status).send(data);
                         });
                     }
                 }); 

@@ -1,64 +1,153 @@
-const requestFull = {
-    accessRequestCompetentPerson: "A Comp",
-    accessRequestDescription: "7 day shutdown of eccles line to allow for re-railing of the following curves:\n- 27 IB\n- 30 IB/OB\n- 31 IB/OB\n- 33 IB/OB",
-    accessRequestSiteContactPhone: "07450854576",
-    accessRequestTitle: "Eccles line blockade works ",
-    accessTypeDisruptive: true,
-    created: "2022-04-27T09:01:12+01:00",
-    locationLimitItems: [
-        {
-            durationType: "D",
-            locationIssolation: "De-energise",
-            locationLimitDate: "2022-05-01",
-            locationLimitDuration: "7",
-            locationLimitStatus: "pending",
-            locationLimitTime: "20:00",
-            locationLimitType: "Occupation",
-            locationSelect: "MediaCityUK",
-            locations: [
-                "Eccles",
-                "Ladywell",
-                "Weaste",
-                "Langworthy",
-                "Broadway",
-                "MediaCityUK"
-            ],
-            "nearestHospital": "Salford Royal, Stott Lane, Salford, M6 8HD",
-            "signallingResource": true
-        }
-    ],
-    methodStatementItems: [
-      {
-        methodStatement: "Isolate and de-energise site\nEstablish traffic management\nCommence rail removal",
-        methodStatementEquipment: "Cutting tools, welding equipment",
-        methodStatementPPE: "Five Point PPE (Minumum)",
-        methodStatementStatus: "pending",
-        methodStatementTitle: "Re-railing method statement",
-        methodStatementTrackVehicles: "Excavator"
-      }
-    ],
-    projectChangeRequestID: "n/a",
-    projectOrganisation: "TfGM",
-    projectTitle: "Eccles line blockade",
-    requestStatus: "Submitted for approval",
-    requestorEmail: "jbell@metrolink.co.uk",
-    requestorName: "Jack Bell",
-    requestorOrganisation: "TfGM",
-    requestorPhone: "07450854576",
-    riskAssessmentItems: [
-        {
-            impact: "4",
-            likelihood: "3",
-            mitigatedLikelihood: "2",
-            riskAssessmentStatus: "pending",
-            riskHazardDescription: "Risk of injury to staff by lifting and moving rail ",
-            riskHazardMitigation: "Use of safe lifting equipment and procedures",
-            riskHazardTitle: "Heavy lifting of rail"
-        }
-    ],
-    updated: "2022-04-27T09:05:17+01:00"
-  }
+const moment = require('moment');
 
-  module.exports = {
-      requestFull: requestFull
-  }
+const requests = [
+    {
+        requestorName: 'Matt Cole',
+        requestorEmail: 'mcole@metrolink.co.uk',
+        requestorPhoneNumber: '+447480627388',
+        requestorOrganisation: 'Metrolink',
+        
+        associatedWithProject: true,
+        projectTitle: 'Eccles Line Renewal',
+        projectOrganisation: 'TfGM',
+        projectRAMs: 'Approved by KAM',
+
+        accessRequestTitle: 'Eccles Line Blockade',
+        accessRequestDescription: 'Seven day shutdown of eccles line to allow for re-railing',
+        accessRequestCompetentPerson: 'N Limit',
+        accessRequestCompetentPersonPhoneNumber: '+447450854789',
+
+        locationLimitItems: [
+            {
+                locationLimitStartDate: '2022-12-12',
+                locationLimitStartTime: '01:00',
+                locationLimitEndDate: '2022-12-18',
+                locationLimitEndTime: '04:00',
+                locationLimitStatus: 'Pending',
+                locationLimitAccessType: 'Possession',
+                locationSelect: 'MediaCityUK',
+                locations: [
+                    'Eccles',
+                    'Ladywell',
+                    'Weaste',
+                    'Langworthy',
+                    'Broadway',
+                    'MediaCityUK'
+                ],
+                nearestHospital: 'Salford Royal, Stott Lane, Salford, M6 8HD',
+                electricalIsolationRequired: true,
+                electricalIsolationType: 'Special Isolation',
+                electricalIsolationRequirements: 'Isolate the Eccles line, but allow operations to continue on TPL.',
+                testTramsRequired: true,
+                testTramRequirements: 'Two trams will be required on the final day to confirm operational status.',
+                signallingResourceRequired: true,
+                signallingResourceRequirements: 'Test sigalling system is operating as expected.'
+            }
+        ],
+
+        hazards: [
+            'additionalHazards',
+            'trackPlant',
+            'excavationRequired',
+            'chapter8Protection',
+            'manualHandling',
+            'poweredAccessEquipment',
+            'hotWorks',
+            'testTrams'
+        ]
+    },
+    {
+        requestorName: 'Matt Cole',
+        requestorEmail: 'mcole@metrolink.co.uk',
+        requestorPhoneNumber: '+447480627388',
+        requestorOrganisation: 'Metrolink',
+        
+        associatedWithProject: true,
+        projectTitle: 'Metrolink Remote Condition Monitoring',
+        projectOrganisation: 'KAM',
+        projectRAMs: 'Approved by KAM',
+
+        accessRequestTitle: 'Sensor Installation',
+        accessRequestDescription: 'Installing Temperature Sensors in the SERs in the city centre.',
+        accessRequestCompetentPerson: 'Scott Jibson',
+        accessRequestCompetentPersonPhoneNumber: '+447450854789',
+
+        locationLimitItems: [
+            {
+                locationLimitStartDate: '2022-10-03',
+                locationLimitStartTime: '01:00',
+                locationLimitEndDate: '2022-10-03',
+                locationLimitEndTime: '04:00',
+                locationLimitStatus: 'Pending',
+                locationLimitAccessType: 'Maintenance',
+                locationSelect: 'Deansgate Castlefield',
+                locations: [
+                    'St Peters Square',
+                    'Deansgate Castlefield'
+                ],
+                nearestHospital: 'Salford Royal, Stott Lane, Salford, M6 8HD',
+                electricalIsolationRequired: false,
+                testTramsRequired: false,
+                signallingResourceRequired: false
+            },
+            {
+                locationLimitStartDate: '2022-10-04',
+                locationLimitStartTime: '01:00',
+                locationLimitEndDate: '2022-10-04',
+                locationLimitEndTime: '04:00',
+                locationLimitStatus: 'Pending',
+                locationLimitAccessType: 'Maintenance',
+                locationSelect: 'Piccadilly Gardens',
+                locations: [
+                    'Market Street',
+                    'Piccadilly Gardens',
+                ],
+                nearestHospital: 'Salford Royal, Stott Lane, Salford, M6 8HD',
+                electricalIsolationRequired: false,
+                testTramsRequired: false,
+                signallingResourceRequired: false
+            },
+            {
+                locationLimitStartDate: '2022-10-05',
+                locationLimitStartTime: '01:00',
+                locationLimitEndDate: '2022-10-05',
+                locationLimitEndTime: '04:00',
+                locationLimitStatus: 'Pending',
+                locationLimitAccessType: 'Maintenance',
+                locationSelect: 'Victoria',
+                locations: [
+                    'Shudehill',
+                    'Victoria',
+                ],
+                nearestHospital: 'Salford Royal, Stott Lane, Salford, M6 8HD',
+                electricalIsolationRequired: false,
+                testTramsRequired: false,
+                signallingResourceRequired: false,
+            },
+            {
+                locationLimitStartDate: '2022-10-03',
+                locationLimitStartTime: '01:00',
+                locationLimitEndDate: '2022-10-03',
+                locationLimitEndTime: '04:00',
+                locationLimitStatus: 'Pending',
+                locationLimitAccessType: 'Maintenance',
+                locationSelect: 'Piccadilly',
+                locations: [
+                    'Exchange Square',
+                    'Piccadilly',
+                ],
+                nearestHospital: 'Salford Royal, Stott Lane, Salford, M6 8HD',
+                electricalIsolationRequired: false,
+                testTramsRequired: false,
+                signallingResourceRequired: false
+            }
+        ],
+
+        hazards: [
+            'lvElectrical',
+            'withinSER'
+        ]
+    }
+]
+
+  module.exports = requests;

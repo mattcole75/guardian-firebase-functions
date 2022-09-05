@@ -17,11 +17,9 @@ const authorise = (req, authenticated, rules, next) => {
     if (!roles)
         return next({ status: 403, message: 'Forbidden' }, null);
     
-    // authorise if the user has the correct roll allocated to their account   
-    // if(roles.every(r => rules.roles.includes(r))) {
-    if(rules.roles.every(r => roles.includes(r))) {
+    // authorise if the user has the correct roll allocated to their account 
+    if(roles.some(el => rules.roles.includes(el)))
         return next(null, { status: 200, message: 'OK'});
-    }
 
     return next( { status: 403, message: 'Forbidden' }, null);
 }

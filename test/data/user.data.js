@@ -44,7 +44,7 @@ const users = [
         {
             desription: 'create user, Fitz Farseer',
             displayName: 'Fitz Farseer',
-            email: 'fitz.farseer@bbt.com',
+            email: 'fitz.farseer@btt.com',
             emailTemp: 'fitz.farseer@system.com',
             phoneNumber: '+441514960456',
             organisation: 'Bing Town Traders',
@@ -57,7 +57,7 @@ const users = [
         {
             desription: 'create user, Tony Ezekiel',
             displayName: 'Tony Ezekiel',
-            email: 'tony.ezekiel@bbt.com',
+            email: 'tony.ezekiel@btt.com',
             emailTemp: 'tony.ezekiel@system.com',
             phoneNumber: '+441514960457',
             organisation: 'Bing Town Traders',
@@ -70,7 +70,7 @@ const users = [
         {
             desription: 'create user, Kennit Ludluck',
             displayName: 'Kennit Ludluck',
-            email: 'kennit.ludluck@bbt.com',
+            email: 'kennit.ludluck@btt.com',
             emailTemp: 'kennit.ludluck@system.com',
             phoneNumber: '+441514960458',
             organisation: 'Bing Town Traders',
@@ -83,7 +83,7 @@ const users = [
         {
             desription: 'create user, Malta Vestrit',
             displayName: 'Malta Vestrit',
-            email: 'malta.vestrit@bbt.com',
+            email: 'malta.vestrit@btt.com',
             emailTemp: 'malta.vestrit@system.com',
             phoneNumber: '+441514960459',
             organisation: 'Bing Town Traders',
@@ -96,7 +96,7 @@ const users = [
         {
             desription: 'create user, Reyn Khuprus',
             displayName: 'Reyn Khuprus',
-            email: 'reyn.khuprus@bbt.com',
+            email: 'reyn.khuprus@btt.com',
             emailTemp: 'reyn.khuprusk@system.com',
             phoneNumber: '+441514960460',
             organisation: 'Bing Town Traders',
@@ -109,7 +109,7 @@ const users = [
         {
             desription: 'create user, Kyle Haven',
             displayName: 'Kyle Haven',
-            email: 'kyle.haven@bbt.com',
+            email: 'kyle.haven@btt.com',
             emailTemp: 'kyle.haven@system.com',
             phoneNumber: '+441514960461',
             organisation: 'Bing Town Traders',

@@ -1,6 +1,7 @@
 // const admin = require('firebase-admin');
 const moment = require('moment');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+const { ResultStorage } = require('firebase-functions/v1/testLab');
 const db = getFirestore();
 
 const userCreateRequest = async (req, next) => {
@@ -102,7 +103,10 @@ const plannerGetRequests  = async (req, next) => {
 
 const publicGetRequests  = async (req, next) => {
 
-    const { localid } = req.headers;
+    const { startdate, enddate } = req.headers;
+    let start = Date.parse(startdate);
+    let end = Date.parse(enddate);
+
     let result = [];
 
     try {
@@ -112,27 +116,29 @@ const publicGetRequests  = async (req, next) => {
             .get()
             .then(res => {
                 res.forEach((doc) => {
-                    result.push({ [doc.id]: doc.data() });
+                    let locationLimitItems = doc.data().locationLimitItems;
+
+                    // todo: order array by start date here
+
+                    locationLimitItems.forEach((lli) => {
+                        if(Date.parse(lli.locationLimitStartDate) >= start && Date.parse(lli.locationLimitStartDate) < end) {
+                            if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
+                                // exists do nothing
+                            } else {
+                                result.push({ [doc.id]: doc.data() });
+                            }        
+                        }
+                    });
                 })
             })
             .then(() => {
                 return next(null, { status: 200, result: result });
-            });;
+            });
 
     } catch (err) {
         return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
     }
 }
-
-// const fetchPlaces = (regionId) => {
-//     return database.ref(apiUris.places)
-//      .orderByChild('regionId')
-//      .equalTo(parseInt(regionId))
-//      .once('value')
-//      .then((snapshot) => {
-//       return snapshot.val() || [];
-//      })
-//    }
 
 module.exports = {
     userCreateRequest: userCreateRequest,

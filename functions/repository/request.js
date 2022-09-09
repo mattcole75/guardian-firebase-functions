@@ -79,17 +79,49 @@ const coordinatorGetRequests  = async (req, next) => {
 
 const plannerGetRequests  = async (req, next) => {
 
-    const { localid } = req.headers;
+    const { startdate, enddate, statusfilter, plannerfilter } = req.headers;
+
+    console.log('status', statusfilter);
+
+    // declare the date filters
+    let startDate = Date.parse(moment().startOf('day'));
+    let endDate = Date.parse(moment().add(10, 'years').startOf('day'));
+    let statusFilter = ['Submitted', 'Under Review', 'Granted', 'Denied'];
+
+    // check the date filters are set
+    if(startdate !== 'null' && enddate !== 'null') {
+        startDate = Date.parse(startdate);
+        endDate = Date.parse(enddate);
+    }
+
+    if(statusfilter !== '') {
+        statusFilter = [statusfilter];
+    }
+    
     let result = [];
 
     try {
-        const requests = db.collection('requests');
+        let requests = db.collection('requests').where('status', 'in', statusFilter);
+
+        if(plannerfilter !== '')
+            requests = db.collection('requests').where('status', 'in', statusFilter).where('assignedPlanner', '==', plannerfilter);
+
         await requests
-            .where('status', 'in', ['Submitted', 'Under Review'])
             .get()
             .then(res => {
                 res.forEach((doc) => {
-                    result.push({ [doc.id]: doc.data() });
+
+                    let locationLimitItems = doc.data().locationLimitItems;
+
+                    locationLimitItems.forEach((lli) => {
+                        if(Date.parse(lli.locationLimitStartDate) >= startDate && Date.parse(lli.locationLimitStartDate) < endDate) {
+                            if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
+                                // exists do nothing
+                            } else {
+                                result.push({ [doc.id]: doc.data() });
+                            }        
+                        }
+                    });
                 })
             })
             .then(() => {
@@ -104,8 +136,8 @@ const plannerGetRequests  = async (req, next) => {
 const publicGetRequests  = async (req, next) => {
 
     const { startdate, enddate } = req.headers;
-    let start = Date.parse(startdate);
-    let end = Date.parse(enddate);
+    const start = Date.parse(startdate);
+    const end = Date.parse(enddate);
 
     let result = [];
 
@@ -117,8 +149,6 @@ const publicGetRequests  = async (req, next) => {
             .then(res => {
                 res.forEach((doc) => {
                     let locationLimitItems = doc.data().locationLimitItems;
-
-                    // todo: order array by start date here
 
                     locationLimitItems.forEach((lli) => {
                         if(Date.parse(lli.locationLimitStartDate) >= start && Date.parse(lli.locationLimitStartDate) < end) {

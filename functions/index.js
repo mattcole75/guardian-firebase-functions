@@ -3,18 +3,18 @@ const functions = require('firebase-functions');
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 // const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 const express = require('./configuration/express');
-const serviceAccount = require('./configuration/guardian.json');
+// const serviceAccount = require('./configuration/guardian.json');
 
 // for production
-// initializeApp({
-//     credential: applicationDefault()
-// });
+initializeApp({
+    credential: applicationDefault()
+});
 
 // for development
-initializeApp({
-    credential: cert(serviceAccount)
-});
+// initializeApp({
+//     credential: cert(serviceAccount)
+// });
 
 const api = express();
 
-exports.api = functions.https.onRequest(api);
+exports.api = functions.region('europe-west1').https.onRequest(api);

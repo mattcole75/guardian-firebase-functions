@@ -1,6 +1,4 @@
 const request = require('../repository/request');
-// const authenticate = require('../auth/authenticated');
-// const authorise = require('../auth/authorised');
 
 const userCreateRequest = (req, next) => {
 

@@ -12,7 +12,7 @@ const create = (req, next) => {
     if (req.body.email === adminEmail)
         params = {...req.body, roles: ['user', 'administrator'], disabled: false };
     else
-        params = {...req.body, roles: ['user'], disabled: false }; // disabled: true for production
+        params = {...req.body, roles: ['user'], disabled: true }; // disabled: true for production
 
     auth.create(params, (err, res) => {
         if(err)

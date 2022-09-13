@@ -85,7 +85,6 @@ describe('Test the create read update functions for requests', () => {
             })
     });
 
-
     it('should, Step 1 - create a part record mimiking the use flow', async () => {
         await endPoint.post('/request')
         .set('Accept', 'application/json')
@@ -193,4 +192,38 @@ describe('Test the create read update functions for requests', () => {
             })
     });
 
+});
+
+describe ('Inject loads of Requests into the system', () => {
+
+    it('should login a user, and return the user details and token given correct login credentials for: ' + users[0].displayName, async () => {
+        await login.post('')
+            .send({
+                email: users.find(usr => usr.displayName === 'Rand Althor').email,
+                password: users.find(usr => usr.displayName === 'Rand Althor').password,
+                returnSecureToken: true
+            })
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .then(res => {
+                users.find(usr => usr.displayName === 'Rand Althor').localId = res.body.localId;
+                users.find(usr => usr.displayName === 'Rand Althor').idToken = res.body.idToken;
+            })
+    });
+
+    requests.forEach(req => {
+
+        it('should register each request in the test array', async () => {
+            await endPoint.post('/request')
+                .set('Accept', 'application/json')
+                .set({
+                    idToken: users.find(usr => usr.displayName === 'Rand Althor').idToken,
+                    localId: users.find(usr => usr.displayName === 'Rand Althor').localId
+                })
+                .send({ ...req, localId: users.find(usr => usr.displayName === 'Rand Althor').idToken } )
+                .expect('Content-Type', /json/)
+                .expect(201)
+        });
+    });
 });

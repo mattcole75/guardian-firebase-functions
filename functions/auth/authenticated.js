@@ -13,7 +13,6 @@ const authenticate = async (req, next) => {
         next(null, { status: 200, data: authenticated });
     }
     catch(err) {
-        console.log('is auth error', err);
         next({ status: 401, message: 'Unauthorised' }, null);
     }
 }

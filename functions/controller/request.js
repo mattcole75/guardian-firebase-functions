@@ -31,6 +31,16 @@ const userGetRequests = (req, next) => {
     });
 }
 
+const userGetRequest = (req, next) => {
+    request.userGetRequest(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else {
+            next(null, res);
+        }
+    });
+}
+
 const coordinatorGetRequests = (req, next) => {
     request.coordinatorGetRequests(req, (err, res) => {
         if(err)
@@ -65,6 +75,7 @@ module.exports = {
     userCreateRequest: userCreateRequest,
     userPatchRequest: userPatchRequest,
     userGetRequests: userGetRequests,
+    userGetRequest: userGetRequest,
     coordinatorGetRequests: coordinatorGetRequests,
     plannerGetRequests: plannerGetRequests,
     publicGetRequests: publicGetRequests

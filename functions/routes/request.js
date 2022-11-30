@@ -11,7 +11,7 @@ module.exports = (app) => {
                 res.status(err.status).send(err);
             else {
                 // who can use this end point api?
-                rules = {
+                const rules = {
                     roles: ['user']
                 }
 
@@ -42,7 +42,7 @@ module.exports = (app) => {
                 res.status(err.status).send(err);
             else {
                 // who can use this endpoint api?
-                rules = {
+                const rules = {
                     allowSameUser: true
                 }
 
@@ -73,7 +73,7 @@ module.exports = (app) => {
             else {
 
                 // who can use this endpoint API?
-                rules = {
+                const rules = {
                     allowSameUser: true
                 }
 
@@ -87,6 +87,38 @@ module.exports = (app) => {
                                 res.status(err.status).send(err);
                             else
                                 res.status(request.status).send(request);
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    // get a single specific request for a user, coordinator, planner
+    app.get('/request', (req, res) => {
+
+        // test the user is logged in
+        auth.isAuthenticated(req, (err, authenticated) => {
+            if(err)
+                res.status(err.status).send(err);
+            else {
+
+                // who can use this endpoint API?
+                const rules = {
+                    allowSameUser: true,
+                    roles: ['coordinator', 'planner'],
+                }
+
+                // check user is authorised to use this endpoint api
+                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                    if(err)
+                        res.status(err.status).send(err);
+                    else {
+                         request.userGetRequest(req, (err, doc) => {
+                            if(err)
+                                res.status(err.status).send(err);
+                            else
+                                res.status(doc.status).send(doc);
                         });
                     }
                 });
@@ -135,7 +167,7 @@ module.exports = (app) => {
             else {
 
                 // who can use this endpoint API?
-                rules = {
+                const rules = {
                     roles: ['planner'],
                 }
 

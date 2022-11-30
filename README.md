@@ -38,7 +38,7 @@ The url addresses below assume you are running the firebase funcation emulator l
 ### POST Create new user:
 
 ```
-POST http://localhost:5001/guardian-d746f/us-central1/api/user
+POST http://localhost:5001/guardian-d746f/europe-west1/api/user
 
 Requires JSON body:
     {
@@ -57,7 +57,7 @@ Returns:
 ```
 ### GET user details:
 ```
-GET http://localhost:5001/guardian-d746f/us-central1/api/user
+GET http://localhost:5001/guardian-d746f/europe-west1/api/user
 
 Requires JSON header:
     {
@@ -79,7 +79,7 @@ Returns:
 ```
 ### GET all user details:
 ```
-GET http://localhost:5001/guardian-d746f/us-central1/api/users
+GET http://localhost:5001/guardian-d746f/europe-west1/api/users
 
 Requires JSON header:
     {
@@ -101,7 +101,7 @@ Returns:
 ```
 ### PATCH user details:
 ```
-PATCH http://localhost:5001/guardian-d746f/us-central1/api/user
+PATCH http://localhost:5001/guardian-d746f/europe-west1/api/user
 
 Requires JSON header:
     {
@@ -127,7 +127,7 @@ Returns:
 ```
 ### PATCH user details administrator:
 ```
-PATCH http://localhost:5001/guardian-d746f/us-central1/api/adminuser
+PATCH http://localhost:5001/guardian-d746f/europe-west1/api/adminuser
 
 Requires JSON header:
     {
@@ -154,7 +154,7 @@ Returns:
 ```
 ### DELETE user:
 ```
-DELETE http://localhost:5001/guardian-d746f/us-central1/api/user
+DELETE http://localhost:5001/guardian-d746f/europe-west1/api/user
 
 Requires JSON header:
     {
@@ -168,6 +168,137 @@ Returns:
     - 403 Forbidden
     - 500 Internal error message
 ```
+
+### POST Request:
+```
+POST http://localhost:5001/guardian-d746f/europe-west1/api/request
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Requires JSON Body:
+    {
+        Application payload
+    }
+
+Returns: 
+    - 201 created
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+
+### PATCH Request:
+```
+POST http://localhost:5001/guardian-d746f/europe-west1/api/request
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Requires JSON Body:
+    {
+        Application payload
+    }
+
+Returns: 
+    - 200 ok
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+
+### GET Requests:
+```
+POST http://localhost:5001/guardian-d746f/europe-west1/api/requests
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Returns:
+    - 200 Ok [array] of requests created by the user
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+
+### GET Request:
+```
+POST http://localhost:5001/guardian-d746f/europe-west1/api/request
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id',
+        param: 'request uid'
+    }
+
+Returns:
+    - 200 Ok & request
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+
+### GET Coordinator Requests:
+```
+POST http://localhost:5001/guardian-d746f/europe-west1/api/coordinatorrequests
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Returns:
+    - 200 Ok [array] of requests to a coordinator role with a status of 'submitted'
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+
+### GET Coordinator Requests:
+```
+POST http://localhost:5001/guardian-d746f/europe-west1/api/plannerrequests
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Returns:
+    - 200 Ok [array] of requests to a planner role with a status of 'Submitted', 'Under Review', 'Granted', 'Denied'
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+
+### GET Public view:
+```
+POST http://localhost:5001/guardian-d746f/europe-west1/api/publicview
+
+Requires JSON header:
+    {
+        startdate: 'yyyy-mm-dd',
+        enddate: 'yyyy-mm-dd'
+    }
+
+Returns:
+    - 200 Ok [array] of requests for public view based on start date and end date with a status of: 'Submitted', 'Under Review', 'Granted', 'Denied'
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+
 ## Setup, development and testing guidlines 
 #### use with care and stay away from the production environment
 

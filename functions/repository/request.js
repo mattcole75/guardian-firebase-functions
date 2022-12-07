@@ -90,7 +90,6 @@ const plannerGetRequests  = async (req, next) => {
     let endDate = Date.parse(moment().add(10, 'years').startOf('day'));
     let statusFilter = ['Submitted', 'Under Review', 'Granted', 'Denied'];
 
-    console.log('dates', startDate, endDate);
     // check the date filters are set
     if(startdate !== 'null' && enddate !== 'null') {
         startDate = Date.parse(startdate);
@@ -115,13 +114,11 @@ const plannerGetRequests  = async (req, next) => {
                 let locationLimitItems = doc.data().locationLimitItems;
 
                 locationLimitItems.forEach((lli) => {
-                    console.log('lli', Date.parse(lli.locationLimitStartDate));
                     if(Date.parse(lli.locationLimitStartDate) >= startDate && Date.parse(lli.locationLimitStartDate) < endDate) {
                         if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
                             // exists do nothing
                             console.log('should not be here');
                         } else {
-                            console.log('MCa', { [doc.id]: doc.data() });
                             result.push({ [doc.id]: doc.data() });
                         }        
                     }
@@ -129,7 +126,25 @@ const plannerGetRequests  = async (req, next) => {
             })
         })
         .then(() => {
-            console.log('mcB', result);
+            return next(null, { status: 200, result: result });
+        })
+        .catch(err => {
+            return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+        });
+}
+
+const disruptionAuthorityGetRequests  = async (req, next) => {
+
+    let result = [];
+    const requests = db.collection('requests');
+
+    await requests.where('disruptiveStatus', '==', 'Submitted').where('status', 'in', ['Submitted', 'Under Review']).get()
+        .then(res => {
+            res.forEach((doc) => {
+                result.push({ [doc.id]: doc.data() });
+            })
+        })
+        .then(() => {
             return next(null, { status: 200, result: result });
         })
         .catch(err => {
@@ -179,5 +194,6 @@ module.exports = {
     userGetRequest: userGetRequest,
     coordinatorGetRequests: coordinatorGetRequests,
     plannerGetRequests: plannerGetRequests,
+    disruptionAuthorityGetRequests: disruptionAuthorityGetRequests,
     publicGetRequests: publicGetRequests
 }

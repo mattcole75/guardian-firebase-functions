@@ -15,9 +15,10 @@ module.exports = () => {
 
     // the auth routes
     require('../routes/auth')(app);
-
     // the access request routes
-    require('../routes/request')(app);
+    require('../routes/accessRequest')(app);
+    // the disruptive routes
+    require('../routes/disruptive')(app);
 
     return app;
 }

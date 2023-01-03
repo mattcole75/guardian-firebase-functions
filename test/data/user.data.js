@@ -23,7 +23,7 @@ const users = [
             phoneNumber: '+441514960454',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['user'],
+            roles: ['user', 'disruptionAuthority'],
             localId: '',
             idToken: '',
             disabled: false
@@ -120,8 +120,8 @@ const users = [
             disabled: false
         },
         {
-            desription: 'create user, sysadmin',
-            displayName: 'sysadmin',
+            desription: 'create user, Matt Cole - sys admin',
+            displayName: 'Matt Cole',
             email: 'mcole@metrolink.co.uk',
             emailTemp: 'mcole@metrolink.co.uk',
             phoneNumber: '+447480927388',

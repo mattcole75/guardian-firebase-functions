@@ -1,12 +1,12 @@
-const request = require('../controller/request');
-const auth = require('../controller/auth');
+const accessRequestController = require('../controller/accessRequest');
+const authController = require('../controller/auth');
 
 module.exports = (app) => {
     
-    app.post('/request', (req, res) => {
+    app.post('/accessrequest', (req, res) => {
 
         // test the user is logged in
-        auth.isAuthenticated(req, (err, authenticated) => {
+        authController.isAuthenticated(req, (err, authenticated) => {
             if(err)
                 res.status(err.status).send(err);
             else {
@@ -16,11 +16,11 @@ module.exports = (app) => {
                 }
 
                 // check user is authorised to use this endpoint api
-                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
                         res.status(err.status).send(err);
                     else {
-                        request.userCreateRequest(req, (err, request) => {
+                        accessRequestController.userCreateRequest(req, (err, request) => {
                             res.set('Content-Type', 'application/json');
                             if(err)
                                 res.status(err.status).send(err);
@@ -34,10 +34,10 @@ module.exports = (app) => {
     });
 
     // update the request
-    app.patch('/request', (req, res) => {
+    app.patch('/accessrequest', (req, res) => {
 
         // test the user is logged in
-        auth.isAuthenticated(req, (err, authenticated) => {
+        authController.isAuthenticated(req, (err, authenticated) => {
             if(err)
                 res.status(err.status).send(err);
             else {
@@ -47,11 +47,11 @@ module.exports = (app) => {
                 }
 
                 // check this user is authorised to use this end point
-                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if (err)
                         res.status(err.status).send(err);
                     else {
-                        request.userPatchRequest(req, (err, request) => {
+                        accessRequestController.userPatchRequest(req, (err, request) => {
                             if(err)
                                 res.status(err.status).send(err);
                             else
@@ -64,10 +64,10 @@ module.exports = (app) => {
     });
 
     // get requests for a user
-    app.get('/requests', (req, res) => {
+    app.get('/accessrequests', (req, res) => {
 
         // test the user is logged in
-        auth.isAuthenticated(req, (err, authenticated) => {
+        authController.isAuthenticated(req, (err, authenticated) => {
             if(err)
                 res.status(err.status).send(err);
             else {
@@ -78,11 +78,11 @@ module.exports = (app) => {
                 }
 
                 // check user is authorised to use this endpoint api
-                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
                         res.status(err.status).send(err);
                     else {
-                         request.userGetRequests(req, (err, request) => {
+                        accessRequestController.userGetRequests(req, (err, request) => {
                             if(err)
                                 res.status(err.status).send(err);
                             else
@@ -95,10 +95,10 @@ module.exports = (app) => {
     });
 
     // get a single specific request for a user, coordinator, planner
-    app.get('/request', (req, res) => {
+    app.get('/accessrequest', (req, res) => {
 
         // test the user is logged in
-        auth.isAuthenticated(req, (err, authenticated) => {
+        authController.isAuthenticated(req, (err, authenticated) => {
             if(err)
                 res.status(err.status).send(err);
             else {
@@ -110,11 +110,11 @@ module.exports = (app) => {
                 }
 
                 // check user is authorised to use this endpoint api
-                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
                         res.status(err.status).send(err);
                     else {
-                         request.userGetRequest(req, (err, doc) => {
+                        accessRequestController.userGetRequest(req, (err, doc) => {
                             if(err)
                                 res.status(err.status).send(err);
                             else
@@ -127,10 +127,10 @@ module.exports = (app) => {
     });
 
      // get requests for a coordinator
-     app.get('/coordinatorrequests', (req, res) => {
+     app.get('/coordinatoraccessrequests', (req, res) => {
 
         // test the user is logged in
-        auth.isAuthenticated(req, (err, authenticated) => {
+        authController.isAuthenticated(req, (err, authenticated) => {
             if(err)
                 res.status(err.status).send(err);
             else {
@@ -141,11 +141,11 @@ module.exports = (app) => {
                 }
 
                 // check user is authorised to use this endpoint api
-                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
                         res.status(err.status).send(err);
                     else {
-                         request.coordinatorGetRequests(req, (err, request) => {
+                        accessRequestController.coordinatorGetRequests(req, (err, request) => {
                             if(err)
                                 res.status(err.status).send(err);
                             else
@@ -158,10 +158,10 @@ module.exports = (app) => {
     });
 
     // get requests for a planner
-    app.get('/plannerrequests', (req, res) => {
+    app.get('/planneraccessrequests', (req, res) => {
 
         // test the user is logged in
-        auth.isAuthenticated(req, (err, authenticated) => {
+        authController.isAuthenticated(req, (err, authenticated) => {
             if(err)
                 res.status(err.status).send(err);
             else {
@@ -172,11 +172,11 @@ module.exports = (app) => {
                 }
 
                 // check user is authorised to use this endpoint api
-                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
                         res.status(err.status).send(err);
                     else {
-                         request.plannerGetRequests(req, (err, request) => {
+                        accessRequestController.plannerGetRequests(req, (err, request) => {
                             if(err)
                                 res.status(err.status).send(err);
                             else
@@ -189,10 +189,10 @@ module.exports = (app) => {
     });
 
     // get requests for a disruption authority role
-    app.get('/disruptionauthorityrequests', (req, res) => {
+    app.get('/disruptionauthorityaccessrequests', (req, res) => {
 
         // test the user is logged in
-        auth.isAuthenticated(req, (err, authenticated) => {
+        authController.isAuthenticated(req, (err, authenticated) => {
             if(err)
                 res.status(err.status).send(err);
             else {
@@ -203,11 +203,11 @@ module.exports = (app) => {
                 }
 
                 // check user is authorised to use this endpoint api
-                auth.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
                         res.status(err.status).send(err);
                     else {
-                         request.disruptionAuthorityGetRequests(req, (err, request) => {
+                        accessRequestController.disruptionAuthorityGetRequests(req, (err, request) => {
                             if(err)
                                 res.status(err.status).send(err);
                             else
@@ -222,7 +222,7 @@ module.exports = (app) => {
     // get requests for a planner
     app.get('/publicview', (req, res) => {
 
-        request.publicGetRequests(req, (err, request) => {
+        accessRequestController.publicGetRequests(req, (err, request) => {
             if(err)
                 res.status(err.status).send(err);
             else

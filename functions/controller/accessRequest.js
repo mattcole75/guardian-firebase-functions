@@ -1,83 +1,75 @@
-const request = require('../repository/request');
+const accessRequestRepo = require('../repository/accessRequest');
 
 const userCreateRequest = (req, next) => {
 
-    request.userCreateRequest(req, (err, res) => {
+    accessRequestRepo.userCreateRequest(req, (err, res) => {
         if(err)
             next(err, null);
-        else {
+        else
             next(null, res);
-        }
     });
 }
 
 const userPatchRequest = (req, next) => {
-    request.userPatchRequest(req, (err, res) => {
+    accessRequestRepo.userPatchRequest(req, (err, res) => {
         if(err)
             next(err, null);
-        else {
+        else
             next(null, res);
-        }
     });
 }
 
 const userGetRequests = (req, next) => {
-    request.userGetRequests(req, (err, res) => {
+    accessRequestRepo.userGetRequests(req, (err, res) => {
         if(err)
             next(err, null);
-        else {
+        else
             next(null, res);
-        }
     });
 }
 
 const userGetRequest = (req, next) => {
-    request.userGetRequest(req, (err, res) => {
+    accessRequestRepo.userGetRequest(req, (err, res) => {
         if(err)
             next(err, null);
-        else {
+        else
             next(null, res);
-        }
     });
 }
 
 const coordinatorGetRequests = (req, next) => {
-    request.coordinatorGetRequests(req, (err, res) => {
+    accessRequestRepo.coordinatorGetRequests(req, (err, res) => {
         if(err)
             next(err, null);
-        else {
+        else
             next(null, res);
-        }
     });
 }
 
 const plannerGetRequests = (req, next) => {
-    request.plannerGetRequests(req, (err, res) => {
+    accessRequestRepo.plannerGetRequests(req, (err, res) => {
         if(err)
             next(err, null);
-        else {
+        else
             next(null, res);
-        }
     });
 }
 
 const disruptionAuthorityGetRequests = (req, next) => {
-    request.disruptionAuthorityGetRequests(req, (err, res) => {
+    accessRequestRepo.disruptionAuthorityGetRequests(req, (err, res) => {
         if(err)
             next(err, null);
-        else {
+        else
             next(null, res);
-        }
     });
 }
 
 const publicGetRequests = (req, next) => {
-    request.publicGetRequests(req, (err, res) => {
+    accessRequestRepo.publicGetRequests(req, (err, res) => {
         if(err)
             next(err, null);
-        else {
+        else
             next(null, res);
-        }
     });
 }
 

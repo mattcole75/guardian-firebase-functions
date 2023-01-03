@@ -1,7 +1,7 @@
 {
   "projects": {
     "production": "guardian-d746f",
-    "staging": "breeze-49c1c"
+    "staging": "guardian-dev-7b74d"
   },
   "targets": {},
   "etags": {}

@@ -7,9 +7,7 @@
     "test": "jest --runInBand",
     "createUsers": "jest -t 'Test the create read update functions for auth'",
     "deleteUsers": "jest -t 'Test the delete functions for auth'",
-    "createRequests": "jest -t 'Test the create read update functions for requests'",
-    "injectRequests": "jest -t 'Inject loads of Requests into the system'",
-    "getPlanners": "jest -t 'Test the return of users with the planner role'"
+    "createRequest": "jest -t 'Create and approve access request without disruptive'"
   },
   "keywords": [
     "firebase",

@@ -5,26 +5,31 @@ const db = getFirestore();
 
 const userCreateRequest = async (req, next) => {
 
-    await db.collection('requests')
-        .add({ ...req.body, localId: req.headers.localid, status: 'Draft', inuse: true, updated: moment().format(), created: moment().format() })
-        .then(res => { 
+    await db.collection('accessRequests')
+        .add({
+            ...req.body,
+            status: 'Draft',
+            inuse: true,
+            updated: moment().format(),
+            created: moment().format()
+        })
+        .then(res => {
             return next(null, { status: 201, result: { id: res.id } });
         })
         .catch(err => {
-            return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }
 
 const userPatchRequest = async (req, next) => {
-
     const { param } = req.headers;
-    await db.collection('requests').doc(param)
+    await db.collection('accessRequests').doc(param)
         .set({ ...req.body, updated: moment().format() }, { merge: true })
-        .then(res => {
+        .then(() => {
             return next(null, { status: 200, result: 'OK' });
         })
         .catch(err => {
-            return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }
 
@@ -33,8 +38,8 @@ const userGetRequests = async (req, next) => {
     const { localid } = req.headers;
     let result = [];
 
-    const requests = db.collection('requests');
-    await requests.where('localId', '==', localid).get()
+    const requests = db.collection('accessRequests');
+    await requests.where('requestor.localId', '==', localid).get()
         .then(res => {
             res.forEach((doc) => {
                 result.push({ [doc.id]: doc.data() });
@@ -44,7 +49,7 @@ const userGetRequests = async (req, next) => {
             return next(null, { status: 200, result: result });
         })
         .catch(err => {
-            return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }
 
@@ -52,22 +57,22 @@ const userGetRequest = async (req, next) => {
 
     const { uid } = req.headers;
 
-    await db.collection('requests').doc(uid)
+    await db.collection('accessRequests').doc(uid)
         .get()
         .then(doc => {
             return next(null, { status: 200, result: { [doc.id]: doc.data() }})
         })
         .catch(err => {
-            return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }
 
 const coordinatorGetRequests  = async (req, next) => {
 
     let result = [];
-    const requests = db.collection('requests');
+    const accessRequests = db.collection('accessRequests');
 
-    await requests.where('status', '==', 'Submitted').get()
+    await accessRequests.where('status', '==', 'Submitted').get()
         .then(res => {
             res.forEach((doc) => {
                 result.push({ [doc.id]: doc.data() });
@@ -77,7 +82,7 @@ const coordinatorGetRequests  = async (req, next) => {
             return next(null, { status: 200, result: result });
         })
         .catch(err => {
-            return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }
 
@@ -101,12 +106,12 @@ const plannerGetRequests  = async (req, next) => {
     }
     
     let result = [];
-    let requests = db.collection('requests').where('status', 'in', statusFilter);
+    let accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter);
 
     if(plannerfilter !== '')
-        requests = db.collection('requests').where('status', 'in', statusFilter).where('assignedPlanner', '==', plannerfilter);
+        accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('assignedPlanner', '==', plannerfilter);
 
-    await requests
+    await accessRequests
         .get()
         .then(res => {
             res.forEach((doc) => {
@@ -129,16 +134,16 @@ const plannerGetRequests  = async (req, next) => {
             return next(null, { status: 200, result: result });
         })
         .catch(err => {
-            return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }
 
 const disruptionAuthorityGetRequests  = async (req, next) => {
 
     let result = [];
-    const requests = db.collection('requests');
+    const accessRequests = db.collection('accessRequests');
 
-    await requests.where('disruptiveStatus', '==', 'Submitted').where('status', 'in', ['Submitted', 'Under Review']).get()
+    await accessRequests.where('disruptiveStatus', '==', 'Submitted').where('status', 'in', ['Submitted', 'Under Review']).get()
         .then(res => {
             res.forEach((doc) => {
                 result.push({ [doc.id]: doc.data() });
@@ -148,7 +153,7 @@ const disruptionAuthorityGetRequests  = async (req, next) => {
             return next(null, { status: 200, result: result });
         })
         .catch(err => {
-            return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }
 
@@ -160,8 +165,8 @@ const publicGetRequests  = async (req, next) => {
 
     let result = [];
 
-    const requests = db.collection('requests');
-    await requests
+    const accessRequests = db.collection('accessRequests');
+    await accessRequests
         .where('status', 'in', ['Submitted', 'Under Review', 'Granted', 'Denied'])
         .get()
         .then(res => {
@@ -183,7 +188,7 @@ const publicGetRequests  = async (req, next) => {
             return next(null, { status: 200, result: result });
         })
         .catch(err => {
-            return next({ status: 500, message: `${err.code}} - ${err.message}` }, null);
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }
 

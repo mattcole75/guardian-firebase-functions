@@ -32,6 +32,12 @@ module.exports = {
 }
 ```
 
+## Testing
+The functions come with a suite of auto test which are set up in the test directory and runs through the package.json file.
+```
+npm run test
+```
+
 ## Functions
 The url addresses below assume you are running the firebase funcation emulator locally.
 
@@ -265,9 +271,26 @@ Returns:
     - 500 Internal error message
 ```
 
-### GET Coordinator Requests:
+### GET Planner Requests:
 ```
 POST http://localhost:5001/guardian-d746f/europe-west1/api/plannerrequests
+
+Requires JSON header:
+    {
+        idToken: 'the given firebase auth token',
+        localId: 'the given firebase user id'
+    }
+
+Returns:
+    - 200 Ok [array] of requests to a planner role with a status of 'Submitted', 'Under Review', 'Granted', 'Denied'
+    - 401 Unauthorised
+    - 403 Forbidden
+    - 500 Internal error message
+```
+
+### GET Disruption Authority Requests:
+```
+POST http://localhost:5001/guardian-d746f/europe-west1/api/disruptionauthorityrequests
 
 Requires JSON header:
     {
@@ -301,6 +324,11 @@ Returns:
 
 ## Setup, development and testing guidlines 
 #### use with care and stay away from the production environment
+
+### To view which instance you are connecting to and what is available
+```
+firebase use
+```
 
 ### To configure your firebase alias':
 ```

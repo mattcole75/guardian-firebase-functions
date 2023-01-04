@@ -18,6 +18,15 @@ const userGetDisruptives = (req, next) => {
     });
 };
 
+const disruptionAuthorityGetDisruptives = (req, next) => {
+    disruptive.disruptionAuthorityGetDisruptives(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else
+            next(null, res);
+    });
+};
+
 const plannerPatchDisruptive = (req, next) => {
     disruptive.plannerPatchDisruptive(req, (err, res) => {
         if(err)
@@ -30,5 +39,6 @@ const plannerPatchDisruptive = (req, next) => {
 module.exports = {
     plannerCreateDisruptive: plannerCreateDisruptive,
     userGetDisruptives: userGetDisruptives,
+    disruptionAuthorityGetDisruptives: disruptionAuthorityGetDisruptives,
     plannerPatchDisruptive: plannerPatchDisruptive
 }

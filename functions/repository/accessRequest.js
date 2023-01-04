@@ -109,7 +109,7 @@ const plannerGetRequests  = async (req, next) => {
     let accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter);
 
     if(plannerfilter !== '')
-        accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('assignedPlanner', '==', plannerfilter);
+        accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('administration.assignedPlanner', '==', plannerfilter);
 
     await accessRequests
         .get()

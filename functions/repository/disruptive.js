@@ -54,9 +54,31 @@ const userGetDisruptives = async (req, next) => {
         });
 }
 
+const disruptionAuthorityGetDisruptives = async (req, next) => {
+
+    let result = [];
+
+    // const disruptives = db.collection('disruptives').where('status', '==', 'Submitted');
+    const disruptives = db.collection('disruptives');
+    await disruptives
+        .get()
+        .then(res => {
+            res.forEach((doc) => {
+                result.push({ [doc.id]: doc.data() });
+            })
+        })
+        .then(() => {
+            return next(null, { status: 200, result: result });
+        })
+        .catch(err => {
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
+        });
+}
+
 
 module.exports = {
     plannerCreateDisruptive: plannerCreateDisruptive,
     plannerPatchDisruptive: plannerPatchDisruptive,
-    userGetDisruptives: userGetDisruptives
+    userGetDisruptives: userGetDisruptives,
+    disruptionAuthorityGetDisruptives: disruptionAuthorityGetDisruptives
 }

@@ -983,4 +983,172 @@ describe('Create and approve access request without disruptive', () => {
             .expect('Content-Type', /json/)
             .expect(200)
     });
+
+    it('should, return a list of 1 disruptive item ', async () => {
+        await endPoint.get('/disruptivesforreview')
+            .set('Accept', 'application/json')
+            .set({
+                idToken: users.find(usr => usr.displayName === 'Chade Fallstar').idToken,
+                localId: users.find(usr => usr.displayName === 'Chade Fallstar').localId,
+            })
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .then(res => {
+                expect(res.body.result).toHaveLength(1);
+            })
+    });
+
+    it('should, approve the disruptive', async () => {
+        await endPoint.patch('/disruptive')
+            .set('Accept', 'application/json')
+            .set({
+                idToken: users.find(usr => usr.displayName === 'Chade Fallstar').idToken,
+                localId: users.find(usr => usr.displayName === 'Chade Fallstar').localId,
+                param: disruptiveId
+            })
+            .send({
+                status: 'Approved'
+            })
+        .expect('Content-Type', /json/)
+        .expect(200)
+    });
+
+    it('should, add the distruptive submit event', async () => {
+        await endPoint.patch('/accessrequest')
+            .set('Accept', 'application/json')
+            .set({
+                idToken: users.find(usr => usr.displayName === 'Chade Fallstar').idToken,
+                localId: users.find(usr => usr.displayName === 'Chade Fallstar').localId,
+                param: accessRequestId
+            })
+            .send({
+                    eventLog: [
+                        {
+                            user: users.find(usr => usr.displayName === 'Rand Althor').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Created'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Rand Althor').displayName,
+                            logged: moment().format(),
+                            event: 'Not compliant to 6 week notice requirement'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Rand Althor').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Submitted'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Tony Ezekiel').displayName,
+                            logged: moment().format(),
+                            event: 'Planner (' + users.find(usr => usr.displayName === 'Fitz Farseer').displayName + ') assigned to Access Request'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Fitz Farseer').displayName,
+                            logged: moment().format(),
+                            event: 'Location Limits for (Newton Heath and Moston) is confirmed'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Fitz Farseer').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Granted'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Fitz Farseer').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Declined'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Rand Althor').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Submitted'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Fitz Farseer').displayName,
+                            logged: moment().format(),
+                            event: 'ORL Closure disruptive Submitted for approval'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Chade Fallstar').displayName,
+                            logged: moment().format(),
+                            event: 'ORL Closure disruptive approved'
+                        }
+                    ]
+            })
+            .expect('Content-Type', /json/)
+            .expect(200)
+    });
+
+    it('should, grant access for the access request', async () => {
+        await endPoint.patch('/accessrequest')
+        .set('Accept', 'application/json')
+        .set({
+            idToken: users.find(usr => usr.displayName === 'Fitz Farseer').idToken,
+            localId: users.find(usr => usr.displayName === 'Fitz Farseer').localId,
+            param: accessRequestId
+        })
+        .send({
+            status: 'Granted',
+            updated: moment().format(),
+                    eventLog: [
+                        {
+                            user: users.find(usr => usr.displayName === 'Rand Althor').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Created'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Rand Althor').displayName,
+                            logged: moment().format(),
+                            event: 'Not compliant to 6 week notice requirement'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Rand Althor').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Submitted'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Tony Ezekiel').displayName,
+                            logged: moment().format(),
+                            event: 'Planner (' + users.find(usr => usr.displayName === 'Fitz Farseer').displayName + ') assigned to Access Request'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Fitz Farseer').displayName,
+                            logged: moment().format(),
+                            event: 'Location Limits for (Newton Heath and Moston) is confirmed'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Fitz Farseer').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Granted'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Fitz Farseer').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Declined'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Rand Althor').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Submitted'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Fitz Farseer').displayName,
+                            logged: moment().format(),
+                            event: 'ORL Closure disruptive Submitted for approval'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Chade Fallstar').displayName,
+                            logged: moment().format(),
+                            event: 'ORL Closure disruptive approved'
+                        },
+                        {
+                            user: users.find(usr => usr.displayName === 'Fitz Farseer').displayName,
+                            logged: moment().format(),
+                            event: 'Access Request Granted'
+                        }
+                    ]
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+    });
 });

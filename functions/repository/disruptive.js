@@ -38,7 +38,7 @@ const userGetDisruptives = async (req, next) => {
     const { uid } = req.headers;
     let result = [];
 
-    const requests = db.collection('disruptives').where('accessRequestId', '==', uid);
+    const requests = db.collection('disruptives').where('accessRequestId', '==', uid).where('inuse', '==', false);
     await requests
         .get()
         .then(res => {

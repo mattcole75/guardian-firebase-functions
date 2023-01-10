@@ -39,7 +39,10 @@ const userGetRequests = async (req, next) => {
     let result = [];
 
     const requests = db.collection('accessRequests');
-    await requests.where('requestor.localId', '==', localid).get()
+    await requests
+    .where('requestor.localId', '==', localid)
+    .where('inuse', '==', true)
+    .get()
         .then(res => {
             res.forEach((doc) => {
                 result.push({ [doc.id]: doc.data() });
@@ -72,7 +75,10 @@ const coordinatorGetRequests  = async (req, next) => {
     let result = [];
     const accessRequests = db.collection('accessRequests');
 
-    await accessRequests.where('status', '==', 'Submitted').get()
+    await accessRequests
+        .where('status', '==', 'Submitted')
+        .where('inuse', '==', true)
+        .get()
         .then(res => {
             res.forEach((doc) => {
                 result.push({ [doc.id]: doc.data() });
@@ -106,10 +112,10 @@ const plannerGetRequests  = async (req, next) => {
     }
     
     let result = [];
-    let accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter);
+    let accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('inuse', '==', true);
 
     if(plannerfilter !== '')
-        accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('administration.assignedPlanner', '==', plannerfilter);
+        accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('administration.assignedPlanner', '==', plannerfilter).where('inuse', '==', true);
 
     await accessRequests
         .get()
@@ -143,7 +149,11 @@ const disruptionAuthorityGetRequests  = async (req, next) => {
     let result = [];
     const accessRequests = db.collection('accessRequests');
 
-    await accessRequests.where('disruptiveStatus', '==', 'Submitted').where('status', 'in', ['Submitted', 'Under Review']).get()
+    await accessRequests
+        .where('disruptiveStatus', '==', 'Submitted')
+        .where('status', 'in', ['Submitted', 'Under Review'])
+        .where('inuse', '==', true)
+        .get()
         .then(res => {
             res.forEach((doc) => {
                 result.push({ [doc.id]: doc.data() });
@@ -153,6 +163,30 @@ const disruptionAuthorityGetRequests  = async (req, next) => {
             return next(null, { status: 200, result: result });
         })
         .catch(err => {
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
+        });
+}
+
+const plannerGetClosedRequests = async (req, next) => {
+
+    let result = [];
+
+    const requests = db.collection('accessRequests');
+    await requests
+    .where('summary.accessLastDay', '<', moment().format('YYYY-MM-DD'))
+    .where('inuse', '==', true)
+    .where('status', '==', 'Granted')
+    .get()
+        .then(res => {
+            res.forEach((doc) => {
+                result.push({ [doc.id]: doc.data() });
+            })
+        })
+        .then(() => {
+            return next(null, { status: 200, result: result });
+        })
+        .catch(err => {
+            console.log('date query error', err);
             return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }
@@ -200,5 +234,6 @@ module.exports = {
     coordinatorGetRequests: coordinatorGetRequests,
     plannerGetRequests: plannerGetRequests,
     disruptionAuthorityGetRequests: disruptionAuthorityGetRequests,
+    plannerGetClosedRequests: plannerGetClosedRequests,
     publicGetRequests: publicGetRequests
 }

@@ -219,6 +219,37 @@ module.exports = (app) => {
         });
     });
 
+    // get request that are open and in the past
+    app.get('/closedaccessrequest', (req, res) => {
+
+        // test the user is logged in
+        authController.isAuthenticated(req, (err, authenticated) => {
+            if(err)
+                res.status(err.status).send(err);
+            else {
+
+                // who can use this endpoint API?
+                const rules = {
+                    roles: ['coordinator', 'planner'],
+                }
+
+                // check user is authorised to use this endpoint api
+                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                    if(err)
+                        res.status(err.status).send(err);
+                    else {
+                        accessRequestController.plannerGetClosedRequests(req, (err, doc) => {
+                            if(err)
+                                res.status(err.status).send(err);
+                            else
+                                res.status(doc.status).send(doc);
+                        });
+                    }
+                });
+            }
+        });
+    });
+
     // get requests for a planner
     app.get('/publicview', (req, res) => {
 

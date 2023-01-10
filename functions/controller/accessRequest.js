@@ -64,6 +64,15 @@ const disruptionAuthorityGetRequests = (req, next) => {
     });
 }
 
+const plannerGetClosedRequests = (req, next) => {
+    accessRequestRepo.plannerGetClosedRequests(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else
+            next(null, res);
+    });
+}
+
 const publicGetRequests = (req, next) => {
     accessRequestRepo.publicGetRequests(req, (err, res) => {
         if(err)
@@ -81,5 +90,6 @@ module.exports = {
     coordinatorGetRequests: coordinatorGetRequests,
     plannerGetRequests: plannerGetRequests,
     disruptionAuthorityGetRequests: disruptionAuthorityGetRequests,
+    plannerGetClosedRequests: plannerGetClosedRequests,
     publicGetRequests: publicGetRequests
 }

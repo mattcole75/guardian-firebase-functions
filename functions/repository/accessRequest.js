@@ -140,6 +140,7 @@ const plannerGetRequests  = async (req, next) => {
             return next(null, { status: 200, result: result });
         })
         .catch(err => {
+            console.log(err);
             return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }

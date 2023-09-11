@@ -33,7 +33,7 @@ module.exports = (app) => {
         });
     });
 
-    // update the request
+    // // update the request
     app.patch('/accessrequest', (req, res) => {
 
         // test the user is logged in
@@ -81,8 +81,8 @@ module.exports = (app) => {
                 authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
                         res.status(err.status).send(err);
-                    else {
-                        accessRequestController.userGetRequests(req, (err, request) => {
+                    else {                        
+                        accessRequestController.userGetRequests(req, authenticated.data.roles, (err, request) => {
                             if(err)
                                 res.status(err.status).send(err);
                             else
@@ -115,130 +115,6 @@ module.exports = (app) => {
                         res.status(err.status).send(err);
                     else {
                         accessRequestController.userGetRequest(req, (err, doc) => {
-                            if(err)
-                                res.status(err.status).send(err);
-                            else
-                                res.status(doc.status).send(doc);
-                        });
-                    }
-                });
-            }
-        });
-    });
-
-     // get requests for a coordinator
-     app.get('/coordinatoraccessrequests', (req, res) => {
-
-        // test the user is logged in
-        authController.isAuthenticated(req, (err, authenticated) => {
-            if(err)
-                res.status(err.status).send(err);
-            else {
-
-                // who can use this endpoint API?
-                rules = {
-                    roles: ['coordinator'],
-                }
-
-                // check user is authorised to use this endpoint api
-                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
-                    if(err)
-                        res.status(err.status).send(err);
-                    else {
-                        accessRequestController.coordinatorGetRequests(req, (err, request) => {
-                            if(err)
-                                res.status(err.status).send(err);
-                            else
-                                res.status(request.status).send(request);
-                        });
-                    }
-                });
-            }
-        });
-    });
-
-    // get requests for a planner
-    app.get('/planneraccessrequests', (req, res) => {
-
-        // test the user is logged in
-        authController.isAuthenticated(req, (err, authenticated) => {
-            if(err)
-                res.status(err.status).send(err);
-            else {
-
-                // who can use this endpoint API?
-                const rules = {
-                    roles: ['planner'],
-                }
-
-                // check user is authorised to use this endpoint api
-                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
-                    if(err)
-                        res.status(err.status).send(err);
-                    else {
-                        accessRequestController.plannerGetRequests(req, (err, request) => {
-                            if(err)
-                                res.status(err.status).send(err);
-                            else
-                                res.status(request.status).send(request);
-                        });
-                    }
-                });
-            }
-        });
-    });
-
-    // get requests for a disruption authority role
-    app.get('/disruptionauthorityaccessrequests', (req, res) => {
-
-        // test the user is logged in
-        authController.isAuthenticated(req, (err, authenticated) => {
-            if(err)
-                res.status(err.status).send(err);
-            else {
-
-                // who can use this endpoint API?
-                const rules = {
-                    roles: ['disruptionAuthority'],
-                }
-
-                // check user is authorised to use this endpoint api
-                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
-                    if(err)
-                        res.status(err.status).send(err);
-                    else {
-                        accessRequestController.disruptionAuthorityGetRequests(req, (err, request) => {
-                            if(err)
-                                res.status(err.status).send(err);
-                            else
-                                res.status(request.status).send(request);
-                        });
-                    }
-                });
-            }
-        });
-    });
-
-    // get request that are open and in the past
-    app.get('/closedaccessrequest', (req, res) => {
-
-        // test the user is logged in
-        authController.isAuthenticated(req, (err, authenticated) => {
-            if(err)
-                res.status(err.status).send(err);
-            else {
-
-                // who can use this endpoint API?
-                const rules = {
-                    roles: ['coordinator', 'planner'],
-                }
-
-                // check user is authorised to use this endpoint api
-                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
-                    if(err)
-                        res.status(err.status).send(err);
-                    else {
-                        accessRequestController.plannerGetClosedRequests(req, (err, doc) => {
                             if(err)
                                 res.status(err.status).send(err);
                             else

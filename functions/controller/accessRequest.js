@@ -19,53 +19,19 @@ const userPatchRequest = (req, next) => {
     });
 }
 
-const userGetRequests = (req, next) => {
-    accessRequestRepo.userGetRequests(req, (err, res) => {
+const userGetRequests = (req, roles, next) => {
+
+    accessRequestRepo.userGetRequests(req, roles, (err, res) => {
         if(err)
             next(err, null);
         else
             next(null, res);
     });
+
 }
 
 const userGetRequest = (req, next) => {
     accessRequestRepo.userGetRequest(req, (err, res) => {
-        if(err)
-            next(err, null);
-        else
-            next(null, res);
-    });
-}
-
-const coordinatorGetRequests = (req, next) => {
-    accessRequestRepo.coordinatorGetRequests(req, (err, res) => {
-        if(err)
-            next(err, null);
-        else
-            next(null, res);
-    });
-}
-
-const plannerGetRequests = (req, next) => {
-    accessRequestRepo.plannerGetRequests(req, (err, res) => {
-        if(err)
-            next(err, null);
-        else
-            next(null, res);
-    });
-}
-
-const disruptionAuthorityGetRequests = (req, next) => {
-    accessRequestRepo.disruptionAuthorityGetRequests(req, (err, res) => {
-        if(err)
-            next(err, null);
-        else
-            next(null, res);
-    });
-}
-
-const plannerGetClosedRequests = (req, next) => {
-    accessRequestRepo.plannerGetClosedRequests(req, (err, res) => {
         if(err)
             next(err, null);
         else
@@ -87,9 +53,5 @@ module.exports = {
     userPatchRequest: userPatchRequest,
     userGetRequests: userGetRequests,
     userGetRequest: userGetRequest,
-    coordinatorGetRequests: coordinatorGetRequests,
-    plannerGetRequests: plannerGetRequests,
-    disruptionAuthorityGetRequests: disruptionAuthorityGetRequests,
-    plannerGetClosedRequests: plannerGetClosedRequests,
     publicGetRequests: publicGetRequests
 }

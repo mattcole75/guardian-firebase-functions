@@ -33,29 +33,6 @@ const userPatchRequest = async (req, next) => {
         });
 }
 
-const userGetRequests = async (req, next) => {
-
-    const { localid } = req.headers;
-    let result = [];
-
-    const requests = db.collection('accessRequests');
-    await requests
-    .where('requestor.localId', '==', localid)
-    .where('inuse', '==', true)
-    .get()
-        .then(res => {
-            res.forEach((doc) => {
-                result.push({ [doc.id]: doc.data() });
-            })
-        })
-        .then(() => {
-            return next(null, { status: 200, result: result });
-        })
-        .catch(err => {
-            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
-        });
-}
-
 const userGetRequest = async (req, next) => {
 
     const { uid } = req.headers;
@@ -70,70 +47,77 @@ const userGetRequest = async (req, next) => {
         });
 }
 
-const coordinatorGetRequests  = async (req, next) => {
+const userGetRequests  = async (req, roles, next) => {
 
-    let result = [];
-    const accessRequests = db.collection('accessRequests');
+    const { startdate, enddate, statusfilter, plannerfilter, localid } = req.headers;
 
-    await accessRequests
-        .where('status', '==', 'Submitted')
-        .where('inuse', '==', true)
-        .get()
-        .then(res => {
-            res.forEach((doc) => {
-                result.push({ [doc.id]: doc.data() });
-            })
-        })
-        .then(() => {
-            return next(null, { status: 200, result: result });
-        })
-        .catch(err => {
-            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
-        });
-}
-
-const plannerGetRequests  = async (req, next) => {
-
-    const { startdate, enddate, statusfilter, plannerfilter } = req.headers;
+    const isPlanner = roles.includes('planner');
+    const isDisruptionAuthority = roles.includes('disruptionAuthority');
 
     // declare the date filters
-    let startDate = Date.parse(moment().add(-7, 'days').startOf('day'));
-    let endDate = Date.parse(moment().add(10, 'years').startOf('day'));
-    let statusFilter = ['Submitted', 'Under Review', 'Granted', 'Denied'];
+    let startDate = Date.parse(moment().add(-6, 'months').startOf('day'));
+    let endDate = Date.parse(moment().add(10, 'years').endOf('day'));
+
+    // let statusFilter = ['Submitted', 'Under Review', 'Granted', 'Denied', 'Draft'];
 
     // check the date filters are set
     if(startdate !== 'null' && enddate !== 'null') {
-        startDate = Date.parse(startdate);
-        endDate = Date.parse(enddate);
+        // startDate = Date.parse(startdate);
+        // endDate = Date.parse(enddate);
+        startDate = Date.parse(moment(startdate).startOf('day'));
+        endDate = Date.parse(moment(enddate).endOf('day'));
     }
 
-    if(statusfilter !== '') {
-        statusFilter = [statusfilter];
-    }
+    // if(statusfilter !== '') {
+    //     statusFilter = [statusfilter];
+    // }
     
     let result = [];
-    let accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('inuse', '==', true);
 
-    if(plannerfilter !== '')
-        accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('administration.assignedPlanner', '==', plannerfilter).where('inuse', '==', true);
+    // let accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('inuse', '==', true);
+    let accessRequests = db.collection('accessRequests').where('inuse', '==', true);
+
+    // if(plannerfilter !== '')
+    //     accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('administration.assignedPlanner', '==', plannerfilter).where('inuse', '==', true);
 
     await accessRequests
         .get()
         .then(res => {
             res.forEach((doc) => {
 
-                let locationLimitItems = doc.data().locationLimitItems;
+                // apply date filter and build result array
+                let locationItems = doc.data().locationItems;
 
-                locationLimitItems.forEach((lli) => {
-                    if(Date.parse(lli.locationLimitStartDate) >= startDate && Date.parse(lli.locationLimitStartDate) < endDate) {
-                        if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
-                            // exists do nothing
-                            console.log('should not be here');
-                        } else {
-                            result.push({ [doc.id]: doc.data() });
-                        }        
-                    }
-                });
+                if(locationItems) { // apply date filter if dates are set
+                    locationItems.forEach((locationItem) => {
+                        if((Date.parse(locationItem.startDate) >= startDate && Date.parse(locationItem.startDate) < endDate) || (Date.parse(locationItem.endDate) >= startDate && Date.parse(locationItem.endDate) < endDate)) {
+
+                            if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
+                                // exists do nothing
+                            } else {
+                                result.push({ [doc.id]: doc.data() });
+                            }
+                        }
+                    });
+                } else {
+                    result.push({ [doc.id]: doc.data() });
+                }
+
+                // filter array based on users role
+                if (isDisruptionAuthority === true) {
+                    console.log('test');
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].summary.isDisruptive === true;
+                    })
+                } else if (isPlanner === false) {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].requestor.localId === localid; // return their own access requests
+                    })
+                } else { // remove draft access requests for planners
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].status !== 'Draft' || ar[Object.keys(ar)].requestor.localId === localid; // planners get everything exept everyone elses drafts, but must get their own drafts
+                    })
+                }
             })
         })
         .then(() => {
@@ -145,71 +129,29 @@ const plannerGetRequests  = async (req, next) => {
         });
 }
 
-const disruptionAuthorityGetRequests  = async (req, next) => {
-
-    let result = [];
-    const accessRequests = db.collection('accessRequests');
-
-    await accessRequests
-        .where('disruptiveStatus', '==', 'Submitted')
-        .where('status', 'in', ['Submitted', 'Under Review'])
-        .where('inuse', '==', true)
-        .get()
-        .then(res => {
-            res.forEach((doc) => {
-                result.push({ [doc.id]: doc.data() });
-            })
-        })
-        .then(() => {
-            return next(null, { status: 200, result: result });
-        })
-        .catch(err => {
-            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
-        });
-}
-
-const plannerGetClosedRequests = async (req, next) => {
-
-    let result = [];
-
-    const requests = db.collection('accessRequests');
-    await requests
-    .where('summary.accessLastDay', '<', moment().format('YYYY-MM-DD'))
-    .where('inuse', '==', true)
-    .where('status', '==', 'Granted')
-    .get()
-        .then(res => {
-            res.forEach((doc) => {
-                result.push({ [doc.id]: doc.data() });
-            })
-        })
-        .then(() => {
-            return next(null, { status: 200, result: result });
-        })
-        .catch(err => {
-            console.log('date query error', err);
-            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
-        });
-}
-
 const publicGetRequests  = async (req, next) => {
 
     const { startdate, enddate } = req.headers;
-    const start = Date.parse(startdate);
-    const end = Date.parse(enddate);
+    const startDate = Date.parse(moment(startdate).startOf('day'));
+    const endDate = Date.parse(moment(enddate).endOf('day'));
 
     let result = [];
 
-    const accessRequests = db.collection('accessRequests');
+    // let accessRequests = db.collection('accessRequests').where('inuse', '==', true).where('status', 'in', ['Submitted', 'Under Review', 'Granted']);
+    let accessRequests = db.collection('accessRequests').where('inuse', '==', true);
     await accessRequests
-        .where('status', 'in', ['Submitted', 'Under Review', 'Granted', 'Denied'])
-        .get()
-        .then(res => {
-            res.forEach((doc) => {
-                let locationLimitItems = doc.data().locationLimitItems;
+    .get()
+    .then(res => {
+        res.forEach((doc) => {
 
-                locationLimitItems.forEach((lli) => {
-                    if(Date.parse(lli.locationLimitStartDate) >= start && Date.parse(lli.locationLimitStartDate) < end) {
+            
+            // apply date filter and build result array
+            let locationItems = doc.data().locationItems;
+            
+            if(locationItems) { // apply date filter if dates are set
+                locationItems.forEach((locationItem) => {
+                    if((Date.parse(locationItem.startDate) >= startDate && Date.parse(locationItem.startDate) < endDate) || (Date.parse(locationItem.endDate) >= startDate && Date.parse(locationItem.endDate) < endDate)) {
+                        
                         if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
                             // exists do nothing
                         } else {
@@ -217,7 +159,8 @@ const publicGetRequests  = async (req, next) => {
                         }
                     }
                 });
-            });
+            }
+        });
         })
         .then(() => {
             return next(null, { status: 200, result: result });
@@ -232,9 +175,5 @@ module.exports = {
     userPatchRequest: userPatchRequest,
     userGetRequests: userGetRequests,
     userGetRequest: userGetRequest,
-    coordinatorGetRequests: coordinatorGetRequests,
-    plannerGetRequests: plannerGetRequests,
-    disruptionAuthorityGetRequests: disruptionAuthorityGetRequests,
-    plannerGetClosedRequests: plannerGetClosedRequests,
     publicGetRequests: publicGetRequests
 }

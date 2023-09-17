@@ -19,6 +19,8 @@ module.exports = () => {
     require('../routes/accessRequest')(app);
     // the disruptive routes
     require('../routes/disruptive')(app);
+    // the speed restrictions routes
+    require('../routes/speedRestrictions')(app);
 
     return app;
 }

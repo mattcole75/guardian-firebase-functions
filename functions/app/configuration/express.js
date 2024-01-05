@@ -14,11 +14,11 @@ module.exports = () => {
     });
 
     // the auth routes
-    require('../app/routes/auth')(app);
+    require('../routes/auth')(app);
     // the access request routes
-    require('../app/routes/accessRequest')(app);
+    require('../routes/accessRequest')(app);
     // the disruptive routes
-    require('../app/routes/disruptive')(app);
+    require('../routes/disruptive')(app);
 
     return app;
 }

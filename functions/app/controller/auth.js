@@ -1,7 +1,7 @@
 const auth = require('../repository/auth');
 const authenticate = require('../auth/authenticated');
 const authorise = require('../auth/authorised');
-const { adminEmail } = require('../configuration/config');
+const { adminEmail } = require('../../configuration/config');
 
 // create new user controller
 const create = (req, next) => {

@@ -47,12 +47,64 @@ const userGetRequest = async (req, next) => {
         });
 }
 
-const userGetRequests  = async (req, roles, next) => {
+const userGetRequests  = async (req, next) => {
+
+    const { startdate, enddate, localid } = req.headers;
+
+    // declare the date filters
+    let startDate = Date.parse(moment().add(-6, 'months').startOf('day'));
+    let endDate = Date.parse(moment().add(10, 'years').endOf('day'));
+
+    // check the date filters are set
+    if(startdate !== 'null' && enddate !== 'null') {
+        startDate = Date.parse(moment(startdate).startOf('day'));
+        endDate = Date.parse(moment(enddate).endOf('day'));
+    }
+    
+    let result = [];
+    let accessRequests = db.collection('accessRequests').where('inuse', '==', true).where('status', '!=', 'Deleted');
+
+    await accessRequests
+        .get()
+        .then(res => {
+            res.forEach((doc) => {
+
+                // apply date filter and build result array
+                let locations = doc.data().locations;
+
+                if(locations.length > 0) { // apply date filter if dates are set
+                    locations.forEach((locationItem) => {
+                        if((Date.parse(locationItem.startDate) >= startDate && Date.parse(locationItem.startDate) < endDate) || (Date.parse(locationItem.endDate) >= startDate && Date.parse(locationItem.endDate) < endDate)) {
+
+                            if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
+                                // exists do nothing
+                            } else {
+                                result.push({ [doc.id]: doc.data() });
+                            }
+                        }
+                    });
+                } else {
+                    result.push({ [doc.id]: doc.data() });
+                }
+
+                // only return users access requests
+                result = result.filter(ar => {
+                    return ar[Object.keys(ar)].requester.localId === localid; // return their own access requests
+                })
+            })
+        })
+        .then(() => {
+            return next(null, { status: 200, result: result });
+        })
+        .catch(err => {
+            console.log(err);
+            return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
+        });
+}
+
+const plannerGetRequests  = async (req, roles, next) => {
 
     const { startdate, enddate, statusfilter, plannerfilter, localid } = req.headers;
-
-    const isPlanner = roles.includes('planner');
-    const isDisruptionAuthority = roles.includes('disruptionAuthority');
 
     // declare the date filters
     let startDate = Date.parse(moment().add(-6, 'months').startOf('day'));
@@ -62,8 +114,6 @@ const userGetRequests  = async (req, roles, next) => {
 
     // check the date filters are set
     if(startdate !== 'null' && enddate !== 'null') {
-        // startDate = Date.parse(startdate);
-        // endDate = Date.parse(enddate);
         startDate = Date.parse(moment(startdate).startOf('day'));
         endDate = Date.parse(moment(enddate).endOf('day'));
     }
@@ -75,7 +125,7 @@ const userGetRequests  = async (req, roles, next) => {
     let result = [];
 
     // let accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('inuse', '==', true);
-    let accessRequests = db.collection('accessRequests').where('inuse', '==', true);
+    let accessRequests = db.collection('accessRequests');
 
     // if(plannerfilter !== '')
     //     accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('administration.assignedPlanner', '==', plannerfilter).where('inuse', '==', true);
@@ -86,10 +136,10 @@ const userGetRequests  = async (req, roles, next) => {
             res.forEach((doc) => {
 
                 // apply date filter and build result array
-                let locationItems = doc.data().locationItems;
+                let locations = doc.data().locations;
 
-                if(locationItems) { // apply date filter if dates are set
-                    locationItems.forEach((locationItem) => {
+                if(locations.length > 0) { // apply date filter if dates are set
+                    locations.forEach((locationItem) => {
                         if((Date.parse(locationItem.startDate) >= startDate && Date.parse(locationItem.startDate) < endDate) || (Date.parse(locationItem.endDate) >= startDate && Date.parse(locationItem.endDate) < endDate)) {
 
                             if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
@@ -104,20 +154,9 @@ const userGetRequests  = async (req, roles, next) => {
                 }
 
                 // filter array based on users role
-                if (isDisruptionAuthority === true) {
-                    console.log('test');
-                    result = result.filter(ar => {
-                        return ar[Object.keys(ar)].summary.isDisruptive === true;
-                    })
-                } else if (isPlanner === false) {
-                    result = result.filter(ar => {
-                        return ar[Object.keys(ar)].requestor.localId === localid; // return their own access requests
-                    })
-                } else { // remove draft access requests for planners
-                    result = result.filter(ar => {
-                        return ar[Object.keys(ar)].status !== 'Draft' || ar[Object.keys(ar)].requestor.localId === localid; // planners get everything exept everyone elses drafts, but must get their own drafts
-                    })
-                }
+                result = result.filter(ar => {
+                    return ar[Object.keys(ar)].status !== 'Draft' || ar[Object.keys(ar)].requester.localId === localid; // planners get everything exept everyone elses drafts, but must get their own drafts
+                });
             })
         })
         .then(() => {
@@ -138,18 +177,19 @@ const publicGetRequests  = async (req, next) => {
     let result = [];
 
     // let accessRequests = db.collection('accessRequests').where('inuse', '==', true).where('status', 'in', ['Submitted', 'Under Review', 'Granted']);
-    let accessRequests = db.collection('accessRequests').where('inuse', '==', true);
+    let accessRequests = db.collection('accessRequests')
+        .where('inuse', '==', true)
+        .where('status', 'in', ['Submitted', 'Under Review', 'Granted', 'Complete']);
     await accessRequests
     .get()
     .then(res => {
         res.forEach((doc) => {
 
-            
             // apply date filter and build result array
-            let locationItems = doc.data().locationItems;
+            let locations = doc.data().locations;
             
-            if(locationItems) { // apply date filter if dates are set
-                locationItems.forEach((locationItem) => {
+            if(locations.length > 0) { // apply date filter if dates are set
+                locations.forEach((locationItem) => {
                     if((Date.parse(locationItem.startDate) >= startDate && Date.parse(locationItem.startDate) < endDate) || (Date.parse(locationItem.endDate) >= startDate && Date.parse(locationItem.endDate) < endDate)) {
                         
                         if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
@@ -175,5 +215,6 @@ module.exports = {
     userPatchRequest: userPatchRequest,
     userGetRequests: userGetRequests,
     userGetRequest: userGetRequest,
+    plannerGetRequests: plannerGetRequests,
     publicGetRequests: publicGetRequests
 }

@@ -1,4 +1,4 @@
-const { adminEmail } = require('../configuration/config');
+const { adminEmail } = require('../../configuration/config');
 
 const authorise = (req, authenticated, rules, next) => {
     const { localid } = req.headers;

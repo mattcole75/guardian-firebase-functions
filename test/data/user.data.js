@@ -23,7 +23,7 @@ const users = [
             phoneNumber: '+441514960454',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['user', 'disruptionAuthority'],
+            roles: ['user'],
             localId: '',
             idToken: '',
             disabled: false
@@ -36,7 +36,7 @@ const users = [
             phoneNumber: '+441514960455',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['user', 'reviewer'],
+            roles: ['user'],
             localId: '',
             idToken: '',
             disabled: false
@@ -62,7 +62,7 @@ const users = [
             phoneNumber: '+441514960457',
             organisation: 'Bing Town Traders',
             password: 'letmein',
-            roles: ['user', 'coordinator'],
+            roles: ['user'],
             localId: '',
             idToken: '',
             disabled: false

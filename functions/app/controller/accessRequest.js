@@ -19,9 +19,9 @@ const userPatchRequest = (req, next) => {
     });
 }
 
-const userGetRequests = (req, roles, next) => {
+const userGetRequests = (req, next) => {
 
-    accessRequestRepo.userGetRequests(req, roles, (err, res) => {
+    accessRequestRepo.userGetRequests(req, (err, res) => {
         if(err)
             next(err, null);
         else
@@ -32,6 +32,16 @@ const userGetRequests = (req, roles, next) => {
 
 const userGetRequest = (req, next) => {
     accessRequestRepo.userGetRequest(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else
+            next(null, res);
+    });
+}
+
+const plannerGetRequests = (req, roles, next) => {
+
+    accessRequestRepo.plannerGetRequests(req, roles, (err, res) => {
         if(err)
             next(err, null);
         else
@@ -53,5 +63,6 @@ module.exports = {
     userPatchRequest: userPatchRequest,
     userGetRequests: userGetRequests,
     userGetRequest: userGetRequest,
+    plannerGetRequests: plannerGetRequests,
     publicGetRequests: publicGetRequests
 }

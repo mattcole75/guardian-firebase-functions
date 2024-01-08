@@ -17,8 +17,6 @@ module.exports = () => {
     require('../app/routes/auth')(app);
     // the access request routes
     require('../app/routes/accessRequest')(app);
-    // the disruptive routes
-    require('../app/routes/disruptive')(app);
 
     return app;
 }

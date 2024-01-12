@@ -2,11 +2,13 @@
 const moment = require('moment');
 const { getFirestore } = require('firebase-admin/firestore');
 const db = getFirestore();
+const template = require('../../configuration/schema/accessRequestSchema');
 
 const userCreateRequest = async (req, next) => {
 
     await db.collection('accessRequests')
         .add({
+            ...template,
             ...req.body,
             status: 'Draft',
             inuse: true,
@@ -104,28 +106,22 @@ const userGetRequests  = async (req, next) => {
 
 const plannerGetRequests  = async (req, roles, next) => {
 
-    const { startdate, enddate, statusfilter, plannerfilter, localid } = req.headers;
+    const { localid, startdate, enddate, statusfilter, categoryfilter, picopfilter, picfilter, organisationfilter, linefilter, isolationfilter, safetyresourcefilter, testtramsfilter, signallingresourcefilter, electricalresourcefilter } = req.headers;
 
     // declare the date filters
     let startDate = Date.parse(moment().add(-6, 'months').startOf('day'));
     let endDate = Date.parse(moment().add(10, 'years').endOf('day'));
-
-    // let statusFilter = ['Submitted', 'Under Review', 'Granted', 'Denied', 'Draft'];
 
     // check the date filters are set
     if(startdate !== 'null' && enddate !== 'null') {
         startDate = Date.parse(moment(startdate).startOf('day'));
         endDate = Date.parse(moment(enddate).endOf('day'));
     }
-
-    // if(statusfilter !== '') {
-    //     statusFilter = [statusfilter];
-    // }
     
     let result = [];
 
     // let accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('inuse', '==', true);
-    let accessRequests = db.collection('accessRequests');
+    let accessRequests = db.collection('accessRequests').where('inuse', '==', true);
 
     // if(plannerfilter !== '')
     //     accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('administration.assignedPlanner', '==', plannerfilter).where('inuse', '==', true);
@@ -151,6 +147,73 @@ const plannerGetRequests  = async (req, roles, next) => {
                     });
                 } else {
                     result.push({ [doc.id]: doc.data() });
+                }
+
+                // filter array based on status
+                if(statusfilter !== '') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].status === statusfilter
+                    });
+                }
+                // filter array based on category
+                if(categoryfilter !== '') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].planningInformation.possessionCategory === categoryfilter
+                    });
+                }
+                // filter array based on picop
+                if(picopfilter !== '') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].planningInformation.picop === picopfilter
+                    });
+                }
+                // filter array based on pic
+                if(picfilter !== '') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].planningInformation.pic === picfilter
+                    });
+                }
+                // filter array based on organisation
+                if(organisationfilter !== '') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].planningInformation.organisation === organisationfilter
+                    });
+                }
+                // filter array based on line
+                if(linefilter !== '') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].planningInformation.line === linefilter
+                    });
+                }
+                // filter array based on isolation type
+                if(isolationfilter !== '') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].planningInformation.isolationType === isolationfilter
+                    });
+                }
+                // filter array based on safety resource required
+                if(safetyresourcefilter === 'true') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].planningInformation.safetyResourceRequired === true
+                    });
+                }
+                // filter array based on safety test trams required
+                if(testtramsfilter === 'true') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].siteDetails.testTramsRequired === true
+                    });
+                }
+                // filter array based on safety test signalling resource required
+                if(signallingresourcefilter === 'true') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].siteDetails.signallingResourceRequired === true
+                    });
+                }
+                // filter array based on safety test electrical resource required
+                if(electricalresourcefilter === 'true') {
+                    result = result.filter(ar => {
+                        return ar[Object.keys(ar)].siteDetails.electricalResourceRequired === true
+                    });
                 }
 
                 // filter array based on users role

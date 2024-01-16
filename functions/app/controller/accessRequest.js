@@ -49,6 +49,15 @@ const plannerGetRequests = (req, roles, next) => {
     });
 }
 
+const plannerGetDailySummary = (req, next) => {
+    accessRequestRepo.plannerGetDailySummary(req, (err, res) => {
+        if(err)
+            next(err, null);
+        else
+            next(null, res);
+    });
+}
+
 const publicGetRequests = (req, next) => {
     accessRequestRepo.publicGetRequests(req, (err, res) => {
         if(err)
@@ -64,5 +73,6 @@ module.exports = {
     userGetRequests: userGetRequests,
     userGetRequest: userGetRequest,
     plannerGetRequests: plannerGetRequests,
+    plannerGetDailySummary: plannerGetDailySummary,
     publicGetRequests: publicGetRequests
 }

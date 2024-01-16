@@ -56,6 +56,7 @@ const AccessRequestSchema = {
         siteRemarks: '',
         tramConfigurationType: 'TBC'
     },
+    documents: [],
     workStages: [],
     eventLog: [],
     status: 'Draft',

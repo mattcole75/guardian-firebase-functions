@@ -157,6 +157,37 @@ module.exports = (app) => {
         });
     });
 
+     // get requests for a user
+     app.get('/dailysummary', (req, res) => {
+
+        // test the user is logged in
+        authController.isAuthenticated(req, (err, authenticated) => {
+            if(err)
+                res.status(err.status).send(err);
+            else {
+
+                // who can use this endpoint API?
+                const rules = {
+                    allowSameUser: true
+                }
+
+                // check user is authorised to use this endpoint api
+                authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
+                    if(err)
+                        res.status(err.status).send(err);
+                    else {                        
+                        accessRequestController.plannerGetDailySummary(req, (err, request) => {
+                            if(err)
+                                res.status(err.status).send(err);
+                            else
+                                res.status(request.status).send(request);
+                        });
+                    }
+                });
+            }
+        });
+    });
+
     // get requests for a planner
     app.get('/publicview', (req, res) => {
 

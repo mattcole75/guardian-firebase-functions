@@ -231,6 +231,51 @@ const plannerGetRequests  = async (req, roles, next) => {
         });
 }
 
+const plannerGetDailySummary  = async (req, next) => {
+
+    const { day } = req.headers;
+
+    // declare the date filters
+    let startDate = Date.parse(moment(day).startOf('day'));
+    let endDate = Date.parse(moment(day).endOf('day'));
+
+    
+    let result = [];
+    let accessRequests = db.collection('accessRequests')
+        .where('inuse', '==', true)
+        .where('status', 'in', ['Submitted', 'Under Review', 'Granted', 'Complete', 'Cancelled']);
+
+    await accessRequests
+        .get()
+        .then(res => {
+            res.forEach((doc) => {
+    
+                // apply date filter and build result array
+                let locations = doc.data().locations;
+                
+                if(locations.length > 0) { // apply date filter if dates are set
+                    locations.forEach((locationItem) => {
+                        if((Date.parse(locationItem.startDate) >= startDate && Date.parse(locationItem.startDate) < endDate) || (Date.parse(locationItem.endDate) >= startDate && Date.parse(locationItem.endDate) < endDate)) {
+                            
+                            if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
+                                // exists do nothing
+                            } else {
+                                result.push({ [doc.id]: doc.data() });
+                            }
+                        }
+                    });
+                }
+            });
+            })
+            .then(() => {
+                return next(null, { status: 200, result: result });
+            })
+            .catch(err => {
+                return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
+            });
+}
+
+
 const publicGetRequests  = async (req, next) => {
 
     const { startdate, enddate } = req.headers;
@@ -243,6 +288,7 @@ const publicGetRequests  = async (req, next) => {
     let accessRequests = db.collection('accessRequests')
         .where('inuse', '==', true)
         .where('status', 'in', ['Submitted', 'Under Review', 'Granted', 'Complete']);
+
     await accessRequests
     .get()
     .then(res => {
@@ -279,5 +325,6 @@ module.exports = {
     userGetRequests: userGetRequests,
     userGetRequest: userGetRequest,
     plannerGetRequests: plannerGetRequests,
+    plannerGetDailySummary: plannerGetDailySummary,
     publicGetRequests: publicGetRequests
 }

@@ -243,7 +243,8 @@ const plannerGetDailySummary  = async (req, next) => {
     let result = [];
     let accessRequests = db.collection('accessRequests')
         .where('inuse', '==', true)
-        .where('status', 'in', ['Submitted', 'Under Review', 'Granted', 'Complete', 'Cancelled']);
+        .where('status', 'in', ['Submitted', 'Under Review', 'Granted', 'Complete', 'Cancelled'])
+        .orderBy('planningInformation.picop');
 
     await accessRequests
         .get()

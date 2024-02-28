@@ -7,13 +7,15 @@ const AccessRequestSchema = {
         organisation: ''
     },
     siteDetails: {
-        siteDescription: '',
+        natureOfWork: '',
         urgentAccessRequired: false,
         electricalIsolationRequired: false,
         signallingResourceRequired: false,
         testTramsRequired: false,
         accessFirstDay: '',
         accessLastDay: '',
+        thirdPartiesOnSite: false,
+        onSiteThirdParties: ''
     },
     locations: [],
     permitRequirements: {
@@ -35,6 +37,7 @@ const AccessRequestSchema = {
         plant: false,
     },
     planningInformation: {
+        planner: '',
         possessionDetails: 'TBC',
         possessionCategory: 'Standard',
         escalatedDate: '',
@@ -59,6 +62,7 @@ const AccessRequestSchema = {
     documents: [],
     workStages: [],
     eventLog: [],
+    permit: [],
     status: 'Draft',
     updated: '',
     created: '',

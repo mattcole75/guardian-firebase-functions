@@ -183,7 +183,7 @@ module.exports = (app) => {
 
                 // who can use this endpoint api?
                 rules = {
-                    roles: ['planner']
+                    roles: ['user']
                 }
                 
                 // check person is authorised to use this endpoint api

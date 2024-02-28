@@ -15,6 +15,8 @@ module.exports = (app) => {
                     roles: ['user']
                 }
 
+                console.log('POST');
+
                 // check user is authorised to use this endpoint api
                 authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
@@ -45,6 +47,8 @@ module.exports = (app) => {
                 const rules = {
                     allowSameUser: true
                 }
+
+                console.log('PATCH');
 
                 // check this user is authorised to use this end point
                 authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
@@ -77,6 +81,8 @@ module.exports = (app) => {
                     allowSameUser: true
                 }
 
+                console.log('GET Requests');
+
                 // check user is authorised to use this endpoint api
                 authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
@@ -106,8 +112,10 @@ module.exports = (app) => {
                 // who can use this endpoint API?
                 const rules = {
                     allowSameUser: true,
-                    roles: ['planner'],
+                    roles: ['planner']
                 }
+
+                console.log('GET Request');
 
                 // check user is authorised to use this endpoint api
                 authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
@@ -140,6 +148,8 @@ module.exports = (app) => {
                     roles: ['planner']
                 }
 
+                console.log('GET Planner ARs');
+
                 // check user is authorised to use this endpoint api
                 authController.isAuthorised(req, authenticated, rules, (err, authorised) => {
                     if(err)
@@ -170,6 +180,8 @@ module.exports = (app) => {
                 const rules = {
                     allowSameUser: true
                 }
+
+                console.log('GET daily');
 
                 // check user is authorised to use this endpoint api
                 authController.isAuthorised(req, authenticated, rules, (err, authorised) => {

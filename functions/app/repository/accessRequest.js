@@ -302,11 +302,9 @@ const publicGetRequests  = async (req, next) => {
                 locations.forEach((locationItem) => {
                     if((Date.parse(locationItem.startDate) >= startDate && Date.parse(locationItem.startDate) < endDate) || (Date.parse(locationItem.endDate) >= startDate && Date.parse(locationItem.endDate) < endDate)) {
                         
-                        if(result.some(ele => Object.keys(ele)[0] === doc.id)) {
-                            // exists do nothing
-                        } else {
+                        if(result.some(ele => Object.keys(ele)[0] !== doc.id)) {
                             result.push({ [doc.id]: doc.data() });
-                        }
+                        } 
                     }
                 });
             }
@@ -316,6 +314,7 @@ const publicGetRequests  = async (req, next) => {
             return next(null, { status: 200, result: result });
         })
         .catch(err => {
+            console.log(err);
             return next({ status: 500, message: `${err.code} - ${err.message}` }, null);
         });
 }

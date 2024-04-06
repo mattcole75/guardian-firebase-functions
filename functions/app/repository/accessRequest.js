@@ -121,7 +121,10 @@ const plannerGetRequests  = async (req, roles, next) => {
     let result = [];
 
     // let accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('inuse', '==', true);
-    let accessRequests = db.collection('accessRequests').where('inuse', '==', true);
+    let accessRequests = db.collection('accessRequests')
+        .where('inuse', '==', true)
+        .orderBy('planningInformation.possessionDetails', 'asc')
+        .orderBy('siteDetails.accessFirstDay', 'asc');
 
     // if(plannerfilter !== '')
     //     accessRequests = db.collection('accessRequests').where('status', 'in', statusFilter).where('administration.assignedPlanner', '==', plannerfilter).where('inuse', '==', true);

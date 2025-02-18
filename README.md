@@ -1,3 +1,6 @@
+This application is archived and is no longer being developed
+
+
 # Firebase serverless functions
 The functions defined below enable role based authorisation to resourse held in the firebase real-time database.
 
